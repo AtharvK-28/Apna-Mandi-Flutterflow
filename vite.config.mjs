@@ -25,6 +25,14 @@ export default defineConfig({
     },
   },
   plugins: [tsconfigPaths(), react(), tagger()],
+  test: {
+    environment: "jsdom",
+    globals: true,
+    // Unit tests only. The end-to-end suite drives a real browser and is run
+    // separately via `npm run test:e2e`.
+    include: ["src/**/*.test.{js,jsx}"],
+    setupFiles: ["./src/test/setup.js"],
+  },
   server: {
     port: "4028",
     host: "0.0.0.0",

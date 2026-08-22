@@ -1,8 +1,29 @@
-.DS_Store
+# Dependencies
 node_modules
-.idea
-package-lock.json
+
+# Build output
 /build
-.vscode/
+
+# Editor / OS
+.DS_Store
 .idea/
-vite.config.*s.*
+.vscode/
+
+# Local logs and scratch files
+*.log
+*.tmp.mjs
+
+# Environment secrets — .env declares real key names, so it must never be
+# committed. Keep .env.example (if added) as the documented template.
+.env
+.env.local
+.env.*.local
+
+# NOTE: package-lock.json used to be listed here. Ignoring the lockfile means
+# `npm install` can resolve different transitive versions on every machine and
+# on CI, so a build that works locally can fail in production for reasons
+# nobody can reproduce. It is now committed deliberately.
+
+# NOTE: a `vite.config.*s.*` rule used to be here, which matches vite.config.mjs
+# — the build configuration itself. It only failed to take effect because the
+# file was already tracked.

@@ -7,7 +7,44 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['"Baloo 2"', 'cursive'],
+        body: ['Mukta', 'sans-serif'],
+      },
       colors: {
+        // Brand palette — CSS-var driven so dark mode restyles every page.
+        // "light" tokens act as subtle tints, "dark" tokens as strong accents;
+        // their actual lightness flips per theme (see src/styles/index.css).
+        terracotta: {
+          DEFAULT: 'hsl(var(--terracotta) / <alpha-value>)',
+          light: 'hsl(var(--terracotta-light) / <alpha-value>)',
+          dark: 'hsl(var(--terracotta-dark) / <alpha-value>)',
+        },
+        turmeric: {
+          DEFAULT: 'hsl(var(--turmeric) / <alpha-value>)',
+          light: 'hsl(var(--turmeric-light) / <alpha-value>)',
+          dark: 'hsl(var(--turmeric-dark) / <alpha-value>)',
+        },
+        leaf: {
+          DEFAULT: 'hsl(var(--leaf) / <alpha-value>)',
+          light: 'hsl(var(--leaf-light) / <alpha-value>)',
+          dark: 'hsl(var(--leaf-dark) / <alpha-value>)',
+        },
+        chili: {
+          DEFAULT: 'hsl(var(--chili) / <alpha-value>)',
+          light: 'hsl(var(--chili-light) / <alpha-value>)',
+        },
+        paper: {
+          DEFAULT: 'hsl(var(--paper) / <alpha-value>)',
+          light: 'hsl(var(--paper-light) / <alpha-value>)',
+          dark: 'hsl(var(--paper-dark) / <alpha-value>)',
+        },
+        ink: {
+          DEFAULT: 'hsl(var(--ink) / <alpha-value>)',
+          light: 'hsl(var(--ink-light) / <alpha-value>)',
+          medium: 'hsl(var(--ink-medium) / <alpha-value>)',
+        },
+        sidebar: { DEFAULT: '#221912', light: '#2e231a' },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -2,6 +2,37 @@
   command = "npm run build"
   publish = "dist"
 
+# Cache headers first: a rule that caches the wrong file is much harder to
+# notice than one that caches too little.
+
+# Vite fingerprints these filenames, so a given URL's contents can never change.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# The service worker must be revalidated on every visit. Cache it and a deploy
+# can sit unseen for as long as the cached copy lives — the browser keeps
+# serving the old worker, which keeps serving the old app.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Same reasoning: the HTML names the current asset bundle, so a stale copy
+# points at files that may no longer exist.
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+# SPA fallback last. Static files that exist are served before this applies,
+# so /sw.js, /manifest.json and the icons are unaffected by it.
 [[redirects]]
   from = "/*"
   to = "/index.html"
