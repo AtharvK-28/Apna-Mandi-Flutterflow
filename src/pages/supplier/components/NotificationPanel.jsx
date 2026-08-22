@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useToast } from '../../../contexts/ToastContext';
 
 const NotificationPanel = ({ notifications, onMarkAsRead, onMarkAllAsRead }) => {
+  const toast = useToast();
   const [filter, setFilter] = useState('all');
   const [showAll, setShowAll] = useState(false);
 
@@ -17,8 +19,7 @@ const NotificationPanel = ({ notifications, onMarkAsRead, onMarkAllAsRead }) => 
   const unreadCount = notifications.filter(n => !n.read).length;
 
   const handleViewAllNotifications = () => {
-    console.log('View all notifications clicked');
-    alert('View All Notifications - would navigate to full notifications page');
+    toast.info('You are seeing every notification from the last 7 days.');
   };
 
   const getNotificationIcon = (type) => {

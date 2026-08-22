@@ -34,8 +34,6 @@ const ShoppingCartCheckout = () => {
   const cartItems = Object.values(globalCartItems);
 
   // Debug logging
-  console.log('ShoppingCartCheckout - globalCartItems:', globalCartItems);
-  console.log('ShoppingCartCheckout - cartItems:', cartItems);
 
   // Initialize supplier groups based on global cart items
   useEffect(() => {
@@ -132,7 +130,6 @@ const ShoppingCartCheckout = () => {
   };
 
   const handleJoinGroup = (group) => {
-    console.log('Joining group:', group);
     
     // Add the group to joined groups
     setJoinedGroups(prev => {
@@ -146,7 +143,6 @@ const ShoppingCartCheckout = () => {
   };
 
   const handleCreateGroup = () => {
-    console.log('Creating new group order');
     // Implement group creation logic
   };
 
@@ -168,7 +164,6 @@ const ShoppingCartCheckout = () => {
       // Generate mock order IDs for each supplier group
       const orderIds = supplierGroups.map((group, index) => `ORD${Date.now()}${index + 1}`);
       
-      console.log('Orders placed:', orderIds);
       
       // Clear the cart after successful order
       clearCart();
@@ -207,7 +202,7 @@ const ShoppingCartCheckout = () => {
         <Header />
         <LocationHeader />
         
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div id="main-content" tabIndex={-1} className="outline-none max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center py-16">
             <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-6">
               <Icon name="ShoppingCart" size={48} className="text-muted-foreground" />
@@ -233,8 +228,8 @@ const ShoppingCartCheckout = () => {
     <div className="min-h-screen bg-background">
       <Header />
       <LocationHeader />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+      <div id="main-content" tabIndex={-1} className="outline-none max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         {/* Page Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

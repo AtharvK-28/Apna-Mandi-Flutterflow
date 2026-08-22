@@ -48,7 +48,7 @@ const UserTypeToggle = ({ selectedType, onTypeChange }) => {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm font-medium text-foreground text-center">
+      <p className="text-sm font-medium text-ink text-center">
         {currentLanguage === 'en' ? 'I am a' : 'मैं हूँ'}
       </p>
       <div className="grid grid-cols-3 gap-3">
@@ -56,14 +56,14 @@ const UserTypeToggle = ({ selectedType, onTypeChange }) => {
           <button
             key={type}
             onClick={() => onTypeChange(type)}
-            className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+            className={`p-4 rounded-xl border-2 transition-all duration-200 ${
               selectedType === type
-                ? 'border-primary bg-primary/5 text-primary' :'border-border bg-card text-muted-foreground hover:border-primary/50 hover:text-foreground'
+                ? 'border-terracotta bg-terracotta/5 text-terracotta' : 'border-paper-dark bg-paper-light text-ink-medium hover:border-terracotta/50 hover:text-ink'
             }`}
           >
             <div className="flex flex-col items-center space-y-2">
-              <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                selectedType === type ? 'bg-primary text-primary-foreground' : 'bg-muted'
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                selectedType === type ? 'bg-terracotta text-white' : 'bg-paper'
               }`}>
                 <Icon name={config.icon} size={24} />
               </div>

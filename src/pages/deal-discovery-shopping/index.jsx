@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import Icon from '../../components/AppIcon';
 import Header from '../../components/ui/Header';
 import LocationHeader from '../../components/ui/LocationHeader';
@@ -156,9 +156,9 @@ const ResultsBar = ({ count, searchQuery, activeFilterCount, onFilterClick, onCl
 // ─── Deal-type summary pills ──────────────────────────────────────────────────
 const DealTypePills = ({ deals }) => {
   const types = [
-    { key: 'fresh-morning', label: '🌅 Fresh Morning', cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
-    { key: 'end-of-day',    label: '🌙 End of Day',    cls: 'bg-amber-50  text-amber-700  border-amber-200'  },
-    { key: 'bulk-discount', label: '📦 Bulk Deals',    cls: 'bg-blue-50   text-blue-700   border-blue-200'   },
+    { key: 'fresh-morning', icon: 'Sunrise',  label: 'Fresh Morning', cls: 'bg-leaf-light text-leaf-dark border-leaf/30' },
+    { key: 'end-of-day',    icon: 'Moon',     label: 'End of Day',    cls: 'bg-turmeric-light text-turmeric-dark border-turmeric/30'  },
+    { key: 'bulk-discount', icon: 'Package',  label: 'Bulk Deals',    cls: 'bg-terracotta-light text-terracotta-dark border-terracotta/30'   },
   ];
   const counts = Object.fromEntries(types.map(t => [t.key, deals.filter(d => d.dealType === t.key).length]));
   const visible = types.filter(t => counts[t.key] > 0);
@@ -167,6 +167,7 @@ const DealTypePills = ({ deals }) => {
     <div className="flex flex-wrap gap-2 mb-5">
       {visible.map(t => (
         <span key={t.key} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold border ${t.cls}`}>
+          <Icon name={t.icon} size={13} />
           {t.label}
           <span className="font-bold opacity-75">{counts[t.key]}</span>
         </span>
@@ -296,7 +297,7 @@ const DealDiscoveryShopping = () => {
       <LocationHeader />
 
       {/* ── Two-column layout: deals | map ── */}
-      <div className="flex flex-col lg:flex-row min-h-[calc(100vh-120px)]">
+      <div id="main-content" tabIndex={-1} className="outline-none flex flex-col lg:flex-row min-h-[calc(100vh-120px)]">
 
         {/* ── Left: deals column ── */}
         <div className={`flex-1 min-w-0 ${isMapVisible ? 'lg:max-w-[calc(100%-400px)]' : ''}`}>

@@ -37,7 +37,7 @@ const OrderTrackingHistory = () => {
       {
         orderId: '#ORD001',
         supplierName: 'Fresh Produce Co.',
-        supplierLocation: 'Sector 14, Gurgaon',
+        supplierLocation: 'Dadar West, Mumbai',
         supplierPhone: '+91 98765 43210',
         supplierRating: 4.5,
         supplierReviews: 128,
@@ -51,7 +51,7 @@ const OrderTrackingHistory = () => {
         subtotal: 260,
         deliveryFee: 25,
         discount: 0,
-        deliveryAddress: 'Street Food Corner, Sector 15, Gurgaon',
+        deliveryAddress: 'Rajesh Corner, Dadar West, Mumbai',
         items: [
           {
             name: 'Fresh Tomatoes',
@@ -94,7 +94,7 @@ const OrderTrackingHistory = () => {
       {
         orderId: '#ORD002',
         supplierName: 'Veggie World',
-        supplierLocation: 'Sector 12, Gurgaon',
+        supplierLocation: 'Bandra Market, Mumbai',
         supplierPhone: '+91 87654 32109',
         supplierRating: 4.2,
         supplierReviews: 95,
@@ -107,7 +107,7 @@ const OrderTrackingHistory = () => {
         subtotal: 165,
         deliveryFee: 15,
         discount: 0,
-        deliveryAddress: 'Street Food Corner, Sector 15, Gurgaon',
+        deliveryAddress: 'Rajesh Corner, Dadar West, Mumbai',
         items: [
           {
             name: 'Potatoes',
@@ -136,7 +136,7 @@ const OrderTrackingHistory = () => {
       {
         orderId: '#ORD003',
         supplierName: 'Spice Garden',
-        supplierLocation: 'Sector 18, Gurgaon',
+        supplierLocation: 'Andheri East, Mumbai',
         supplierPhone: '+91 76543 21098',
         supplierRating: 4.8,
         supplierReviews: 203,
@@ -148,7 +148,7 @@ const OrderTrackingHistory = () => {
         subtotal: 85,
         deliveryFee: 10,
         discount: 0,
-        deliveryAddress: 'Street Food Corner, Sector 15, Gurgaon',
+        deliveryAddress: 'Rajesh Corner, Dadar West, Mumbai',
         items: [
           {
             name: 'Turmeric Powder',
@@ -170,7 +170,7 @@ const OrderTrackingHistory = () => {
       {
         orderId: '#ORD004',
         supplierName: 'Fresh Produce Co.',
-        supplierLocation: 'Sector 14, Gurgaon',
+        supplierLocation: 'Dadar West, Mumbai',
         supplierPhone: '+91 98765 43210',
         supplierRating: 4.5,
         supplierReviews: 128,
@@ -184,7 +184,7 @@ const OrderTrackingHistory = () => {
         subtotal: 295,
         deliveryFee: 25,
         discount: 0,
-        deliveryAddress: 'Street Food Corner, Sector 15, Gurgaon',
+        deliveryAddress: 'Rajesh Corner, Dadar West, Mumbai',
         items: [
           {
             name: 'Fresh Tomatoes',
@@ -351,7 +351,6 @@ const OrderTrackingHistory = () => {
 
   const handleReorder = (order) => {
     // Add items to cart and navigate to cart
-    console.log('Reordering:', order.orderId);
     navigate('/shopping-cart-checkout');
   };
 
@@ -361,7 +360,9 @@ const OrderTrackingHistory = () => {
   };
 
   const handleContactSupplier = (order) => {
-    alert(`Calling ${order.supplierName} at ${order.supplierPhone}`);
+    // Hand off to the device dialler rather than describing the call in a
+    // dialog. On desktop this opens whatever handles tel: links.
+    window.location.href = `tel:${String(order.supplierPhone).replace(/[^+\d]/g, '')}`;
   };
 
   const handleMessageSupplier = (order) => {
@@ -385,7 +386,6 @@ const OrderTrackingHistory = () => {
   };
 
   const handleQRScanSuccess = (scanData) => {
-    console.log('QR Scan successful:', scanData);
     // Update order status to completed
     setOrders(prev => 
       prev.map(order => 
@@ -413,7 +413,7 @@ const OrderTrackingHistory = () => {
     const newOrder = {
       orderId: `#ORD${String(orders.length + 1).padStart(3, '0')}`,
       supplierName: 'Fresh Grocery Store',
-      supplierLocation: 'Sector 15, Gurgaon',
+      supplierLocation: 'Dadar Station, Mumbai',
       supplierPhone: '+91 98765 43210',
       supplierRating: 4.3,
       supplierReviews: 156,
@@ -425,7 +425,7 @@ const OrderTrackingHistory = () => {
       subtotal: 300,
       deliveryFee: 20,
       discount: 0,
-      deliveryAddress: 'Street Food Corner, Sector 15, Gurgaon',
+      deliveryAddress: 'Rajesh Corner, Dadar West, Mumbai',
       items: [
         {
           name: 'Fresh Apples',
@@ -461,7 +461,7 @@ const OrderTrackingHistory = () => {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <div className="flex items-center justify-center py-20">
+        <div id="main-content" tabIndex={-1} className="outline-none flex items-center justify-center py-20">
           <div className="text-center">
             <Icon name="Loader2" size={48} className="text-primary mx-auto mb-4 animate-spin" />
             <p className="text-muted-foreground">Loading your orders...</p>
@@ -474,9 +474,9 @@ const OrderTrackingHistory = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
+
       {/* Page Header */}
-      <div className="bg-card border-b border-border p-4">
+      <div id="main-content" tabIndex={-1} className="outline-none bg-card border-b border-border p-4">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold text-foreground">Order Tracking</h1>

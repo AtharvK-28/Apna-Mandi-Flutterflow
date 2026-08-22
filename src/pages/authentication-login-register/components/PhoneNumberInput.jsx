@@ -34,19 +34,24 @@ const PhoneNumberInput = ({ value, onChange, error, disabled }) => {
         {labels[currentLanguage].label}
       </label>
       <div className="relative">
-        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center space-x-2 text-muted-foreground">
-          <span className="text-lg">🇮🇳</span>
-          <span className="text-sm font-medium">+91</span>
-          <div className="w-px h-4 bg-border" />
+        {/* The dialling code alone identifies the country; a flag emoji rendered
+            as a different image on every platform and told nobody anything the
+            "+91" did not. */}
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-2 text-ink-medium pointer-events-none">
+          <span className="text-sm font-semibold">+91</span>
+          <div className="w-px h-4 bg-paper-dark" />
         </div>
         <input
           type="tel"
+          inputMode="numeric"
+          autoComplete="tel-national"
           value={value}
           onChange={handlePhoneChange}
           placeholder={labels[currentLanguage].placeholder}
           disabled={disabled}
-          className={`w-full pl-20 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent bg-input text-foreground text-lg ${
-            error ? 'border-error' : 'border-border'
+          aria-invalid={!!error}
+          className={`w-full pl-16 pr-4 py-3 border rounded-xl focus:ring-2 focus:ring-terracotta/40 focus:border-transparent bg-paper-light text-ink text-lg ${
+            error ? 'border-chili' : 'border-paper-dark'
           } ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
           maxLength={10}
         />

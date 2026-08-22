@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import Button from '../../../components/ui/Button';
 import Icon from '../../../components/AppIcon';
 import AnimatedOrderButton from '../../../components/ui/AnimatedOrderButton';
+import { useToast } from '../../../contexts/ToastContext';
 
 const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
+  const toast = useToast();
   const [expandedRows, setExpandedRows] = useState(new Set());
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showExportModal, setShowExportModal] = useState(false);
@@ -72,26 +74,28 @@ const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
         [orderId]: 'Confirmed'
       }));
     });
-    alert(`Confirmed ${selectedOrders.size} orders successfully!`);
+    toast.success(`Confirmed ${selectedOrders.size} orders.`);
     setSelectedOrders(new Set());
     setShowBulkActionsModal(false);
   };
 
   const handleBulkAssignRoute = () => {
-    alert(`Assigned route to ${selectedOrders.size} orders!`);
+    toast.success(`Route assigned to ${selectedOrders.size} orders.`);
     setSelectedOrders(new Set());
     setShowBulkActionsModal(false);
   };
 
   const handleBulkCancel = () => {
-    if (confirm(`Are you sure you want to cancel ${selectedOrders.size} orders?`)) {
+    // Cancelling is destructive and cannot be undone from this table, so it
+    // stays behind an explicit confirmation.
+    if (window.confirm(`Cancel ${selectedOrders.size} orders? Vendors will be notified and this cannot be undone.`)) {
       selectedOrders.forEach(orderId => {
         setOrderStatuses(prev => ({
           ...prev,
           [orderId]: 'Cancelled'
         }));
       });
-      alert(`Cancelled ${selectedOrders.size} orders!`);
+      toast.error(`Cancelled ${selectedOrders.size} orders.`);
       setSelectedOrders(new Set());
       setShowBulkActionsModal(false);
     }
@@ -113,7 +117,7 @@ const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
       Status: getOrderStatus(order),
       ...(includeDetails && {
         OrderTime: '2 hours ago',
-        DeliveryAddress: 'Sector 14, Gurgaon',
+        DeliveryAddress: 'Dadar West, Mumbai',
         PaymentMethod: 'Online Payment',
         Contact: '+91 98765 43210'
       })
@@ -156,10 +160,12 @@ const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
       window.URL.revokeObjectURL(url);
     } else if (format === 'PDF (.pdf)') {
       // For PDF, we'll show a message (in real app, you'd use a PDF library)
-      alert('PDF export would generate a formatted PDF report with all order details.');
+      toast.info('PDF export is not available yet — use Excel or CSV for now.');
+      setShowExportModal(false);
+      return;
     }
 
-    alert(`Orders exported successfully as ${format}!`);
+    toast.success(`Orders exported as ${format}.`);
     setShowExportModal(false);
   };
 
@@ -309,7 +315,7 @@ const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
                               </div>
                               <div>
                                 <p className="text-xs font-medium text-card-foreground">Delivery Address</p>
-                                <p className="text-xs text-muted-foreground">Sector 14, Gurgaon</p>
+                                <p className="text-xs text-muted-foreground">Dadar West, Mumbai</p>
                               </div>
                             </div>
                             <div className="flex items-center justify-between p-2 bg-card rounded-md border border-border">
@@ -427,7 +433,7 @@ const OrderAggregationTable = ({ orders, onConfirmOrder, onViewRoute }) => {
                   Cancel
                 </Button>
                 <Button onClick={() => {
-                  alert('Filter applied successfully!');
+                  toast.success('Filter applied.');
                   setShowFilterModal(false);
                 }} className="flex-1">
                   Apply Filter

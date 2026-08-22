@@ -84,38 +84,38 @@ const OrderSummary = ({
 
         {/* Delivery Details */}
         {totalDeliveryFees > 0 && (
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 space-y-2">
+          <div className="bg-terracotta-light/60 border border-terracotta/25 rounded-lg p-3 space-y-2">
             <div className="flex items-center space-x-2">
-              <Icon name="Truck" size={14} className="text-blue-600" />
-              <span className="text-sm font-medium text-blue-800">Delivery Details</span>
+              <Icon name="Truck" size={14} className="text-terracotta" />
+              <span className="text-sm font-medium text-terracotta-dark">Delivery Details</span>
             </div>
             
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="flex items-center space-x-1">
-                <Icon name="Clock" size={10} className="text-blue-500" />
-                <span className="text-blue-700">Est. Time:</span>
-                <span className="text-blue-700 font-medium">30-45 min</span>
+                <Icon name="Clock" size={10} className="text-terracotta" />
+                <span className="text-terracotta-dark">Est. Time:</span>
+                <span className="text-terracotta-dark font-medium">30-45 min</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Icon name="MapPin" size={10} className="text-blue-500" />
-                <span className="text-blue-700">Distance:</span>
-                <span className="text-blue-700 font-medium">2.5 km</span>
+                <Icon name="MapPin" size={10} className="text-terracotta" />
+                <span className="text-terracotta-dark">Distance:</span>
+                <span className="text-terracotta-dark font-medium">2.5 km</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Icon name="Shield" size={10} className="text-blue-500" />
-                <span className="text-blue-700">Insurance:</span>
-                <span className="text-blue-700 font-medium">Included</span>
+                <Icon name="Shield" size={10} className="text-terracotta" />
+                <span className="text-terracotta-dark">Insurance:</span>
+                <span className="text-terracotta-dark font-medium">Included</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Icon name="Package" size={10} className="text-blue-500" />
-                <span className="text-blue-700">Packaging:</span>
-                <span className="text-blue-700 font-medium">Eco-friendly</span>
+                <Icon name="Package" size={10} className="text-terracotta" />
+                <span className="text-terracotta-dark">Packaging:</span>
+                <span className="text-terracotta-dark font-medium">Eco-friendly</span>
               </div>
             </div>
             
-            <div className="text-xs text-blue-600 bg-blue-100 rounded-md p-2">
+            <div className="text-xs text-terracotta bg-terracotta-light rounded-md p-2">
               <div className="flex items-center space-x-1 mb-1">
-                <Icon name="CheckCircle" size={10} className="text-blue-600" />
+                <Icon name="CheckCircle" size={10} className="text-terracotta" />
                 <span className="font-medium">Free delivery on orders above ₹500</span>
               </div>
               <span>Contactless delivery • Real-time tracking • Quality guarantee</span>
@@ -125,29 +125,29 @@ const OrderSummary = ({
 
         {/* Group Buying Benefits */}
         {(groupBuyingSavings > 0 || groupBuyingDeliverySplit > 0) && (
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-3 space-y-2">
+          <div className="bg-gradient-to-r from-leaf-light/60 to-leaf-light/40 border border-leaf/30 rounded-lg p-3 space-y-2">
             <div className="flex items-center space-x-2">
-              <Icon name="Users" size={14} className="text-green-600" />
-              <span className="text-sm font-medium text-green-800">Group Buying Benefits</span>
+              <Icon name="Users" size={14} className="text-leaf-dark" />
+              <span className="text-sm font-medium text-leaf-dark">Group Buying Benefits</span>
             </div>
             
             {groupBuyingSavings > 0 && (
               <div className="flex items-center justify-between text-sm">
-                <span className="text-green-700">Bulk Discount</span>
-                <span className="font-medium text-green-700">-₹{groupBuyingSavings.toFixed(2)}</span>
+                <span className="text-leaf-dark">Bulk Discount</span>
+                <span className="font-medium text-leaf-dark">-₹{groupBuyingSavings.toFixed(2)}</span>
               </div>
             )}
             
             {groupBuyingDeliverySplit > 0 && (
               <div className="flex items-center justify-between text-sm">
-                <span className="text-green-700">Delivery Split</span>
-                <span className="font-medium text-green-700">-₹{groupBuyingDeliverySplit.toFixed(2)}</span>
+                <span className="text-leaf-dark">Delivery Split</span>
+                <span className="font-medium text-leaf-dark">-₹{groupBuyingDeliverySplit.toFixed(2)}</span>
               </div>
             )}
             
             <div className="flex items-center justify-between text-sm font-medium">
-              <span className="text-green-800">Total Group Savings</span>
-              <span className="text-green-800">-₹{(groupBuyingSavings + groupBuyingDeliverySplit).toFixed(2)}</span>
+              <span className="text-leaf-dark">Total Group Savings</span>
+              <span className="text-leaf-dark">-₹{(groupBuyingSavings + groupBuyingDeliverySplit).toFixed(2)}</span>
             </div>
           </div>
         )}
@@ -176,7 +176,7 @@ const OrderSummary = ({
         
         {/* Show total savings */}
         {(finalSavings + groupBuyingDeliverySplit) > 0 && (
-          <div className="text-sm text-green-600 mt-1">
+          <div className="text-sm text-leaf-dark mt-1">
             You save ₹{(finalSavings + groupBuyingDeliverySplit).toFixed(2)} total!
           </div>
         )}
@@ -184,16 +184,16 @@ const OrderSummary = ({
 
       {/* Joined Groups Info */}
       {joinedGroups.length > 0 && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4">
+        <div className="bg-terracotta-light/60 border border-terracotta/25 rounded-lg p-3 mb-4">
           <div className="flex items-center space-x-2 mb-2">
-            <Icon name="CheckCircle" size={16} className="text-blue-600" />
-            <span className="text-sm font-medium text-blue-800">Joined Groups</span>
+            <Icon name="CheckCircle" size={16} className="text-terracotta" />
+            <span className="text-sm font-medium text-terracotta-dark">Joined Groups</span>
           </div>
           <div className="space-y-1">
             {joinedGroups.map((group, index) => (
               <div key={index} className="flex items-center justify-between text-xs">
-                <span className="text-blue-700">{group.supplierName}</span>
-                <span className="text-blue-700">{group.discount}% off</span>
+                <span className="text-terracotta-dark">{group.supplierName}</span>
+                <span className="text-terracotta-dark">{group.discount}% off</span>
               </div>
             ))}
           </div>

@@ -17,7 +17,7 @@ const OrderDetailsModal = ({ order, isOpen, onClose, onContactSupplier, onReorde
       case 'confirmed':
         return 'text-primary bg-primary/10 border-primary/20';
       case 'out for delivery':
-        return 'text-blue-600 bg-blue-100 border-blue-200';
+        return 'text-terracotta bg-terracotta-light border-terracotta/25';
       case 'completed':
         return 'text-success bg-success/10 border-success/20';
       case 'cancelled':

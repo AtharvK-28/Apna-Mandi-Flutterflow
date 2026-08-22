@@ -66,12 +66,10 @@ const InventoryAlerts = ({ alerts, onRestockItem, onUpdateStock }) => {
 
   // New handler functions
   const handleCreateDeal = (alert) => {
-    console.log('Create deal for:', alert);
     alert(`Create Deal - would create a discount deal for ${alert.productName} to clear expiring stock`);
   };
 
   const handleRemoveItem = (alert) => {
-    console.log('Remove item:', alert);
     if (confirm(`Are you sure you want to remove ${alert.productName} from inventory?`)) {
       // Remove the alert from local state
       setLocalAlerts(prev => prev.filter(item => item.id !== alert.id));
@@ -111,7 +109,6 @@ const InventoryAlerts = ({ alerts, onRestockItem, onUpdateStock }) => {
   };
 
   const handleUpdateStock = (alert) => {
-    console.log('Updating stock for:', alert);
     const newStock = prompt(`Enter new stock quantity for ${alert.productName}:`, alert.currentStock);
     if (newStock !== null) {
       const quantity = parseFloat(newStock);

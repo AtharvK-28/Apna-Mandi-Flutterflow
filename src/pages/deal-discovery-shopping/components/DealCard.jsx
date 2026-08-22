@@ -89,21 +89,21 @@ const DealCard = ({ deal, onAddToCart, onQuantityChange }) => {
           label: 'Fresh Morning',
           color: 'badge-success',
           icon: 'Sunrise',
-          gradient: 'from-green-500 to-emerald-500'
+          gradient: 'from-leaf to-leaf-dark'
         };
       case 'end-of-day':
         return {
           label: 'End of Day',
           color: 'badge-warning',
           icon: 'Clock',
-          gradient: 'from-orange-500 to-red-500'
+          gradient: 'from-turmeric to-terracotta'
         };
       case 'bulk-discount':
         return {
           label: 'Bulk Discount',
           color: 'badge-primary',
           icon: 'Package',
-          gradient: 'from-blue-500 to-indigo-500'
+          gradient: 'from-terracotta to-chili'
         };
       default:
         return null;
@@ -125,12 +125,12 @@ const DealCard = ({ deal, onAddToCart, onQuantityChange }) => {
             <div className="skeleton w-full h-full" />
           </div>
         )}
+        {/* `relative` keeps the image painted above the skeleton, so a cached
+            image (whose onLoad never fires) still shows instead of the skeleton */}
         <Image
           src={deal.image}
           alt={deal.name}
-          className={`w-full h-full object-cover transition-all duration-300 group-hover:scale-105 ${
-            imageLoaded ? 'opacity-100' : 'opacity-0'
-          }`}
+          className="relative w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           onLoad={() => setImageLoaded(true)}
         />
         
@@ -152,7 +152,7 @@ const DealCard = ({ deal, onAddToCart, onQuantityChange }) => {
         
         {/* Expired Badge */}
         {isExpired && (
-          <div className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium bg-red-500 text-white">
+          <div className="absolute top-3 right-3 px-2 py-1 rounded-full text-xs font-medium bg-chili text-white">
             Expired
           </div>
         )}
@@ -167,7 +167,7 @@ const DealCard = ({ deal, onAddToCart, onQuantityChange }) => {
               <span className="text-sm font-medium truncate">{deal.supplierName}</span>
             </div>
             <div className="flex items-center space-x-1">
-              <Icon name="Star" size={12} className="text-yellow-400 fill-current" />
+              <Icon name="Star" size={12} className="text-turmeric fill-current" />
               <span className="text-sm">{deal.rating}</span>
             </div>
           </div>

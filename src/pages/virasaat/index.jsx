@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
 import Select from '../../components/ui/Select';
 import Icon from '../../components/AppIcon';
 import Header from '../../components/ui/Header';
+import { useToast } from '../../contexts/ToastContext';
 import { useCart } from '../../contexts/CartContext';
+import FranchiseSection from './components/FranchiseSection';
+import ProvenanceModal from './components/ProvenanceModal';
 
 // ── Reusable Modal Wrapper ──────────────────────────────────────────────────
 const ModalWrap = ({ children, onClose, title, wide }) => (
@@ -45,15 +48,16 @@ const EmptyState = ({ icon, title, description, action }) => (
 
 // ── Category badge config ───────────────────────────────────────────────────
 const categoryConfig = {
-  chutneys:     { label: 'Chutney & Sauce', bg: 'bg-orange-600' },
-  masalas:      { label: 'Masala & Spice',  bg: 'bg-red-600'    },
-  concentrates: { label: 'Concentrate',     bg: 'bg-blue-600'   },
-  doughs:       { label: 'Dough & Batter',  bg: 'bg-yellow-600' },
+  chutneys:     { label: 'Chutney & Sauce', bg: 'bg-terracotta' },
+  masalas:      { label: 'Masala & Spice',  bg: 'bg-chili'    },
+  concentrates: { label: 'Concentrate',     bg: 'bg-leaf-dark'   },
+  doughs:       { label: 'Dough & Batter',  bg: 'bg-turmeric-dark' },
 };
 
 // ══════════════════════════════════════════════════════════════════════════════
 const Virasaat = () => {
   const { cartCount } = useCart();
+  const toast = useToast();
   const [activeTab, setActiveTab]                     = useState('browse');
   const [showLicensorModal, setShowLicensorModal]     = useState(false);
   const [showSubscriberModal, setShowSubscriberModal] = useState(false);
@@ -63,6 +67,7 @@ const Virasaat = () => {
   const [showDetailsModal, setShowDetailsModal]       = useState(false);
   const [selectedStory, setSelectedStory]             = useState(null);
   const [showStoryModal, setShowStoryModal]           = useState(false);
+  const [provenanceLegacy, setProvenanceLegacy]       = useState(null);
 
   // ── Static data ────────────────────────────────────────────────────────────
   const successStories = [
@@ -71,35 +76,35 @@ const Virasaat = () => {
       location: "Surat, Gujarat",
       story: "Rekha was famous in her Surat neighborhood for her fiery imli masala used in her tangy chaat. But her street cart had limited reach. After joining Virasaat, her signature imli masala got listed online with beautiful packaging and storytelling. Within 6 months, she started shipping across Gujarat and even got featured in a local food vlog. Her son now manages logistics while she experiments with new spice blends.",
       topSeller: "Rekha's Khatta-Meetha Imli Masala", earnings: "10x increase in revenue",
-      subscribers: 156, image: "/assets/images/rekha_chaat.jpeg", icon: "🛍️"
+      subscribers: 156, image: "/assets/images/rekha_chaat.jpeg", icon: "ShoppingBag"
     },
     {
       id: 2, vendor: "Abdul Bhai", title: "The Nihari Whisperer of Lucknow",
       location: "Lucknow, Uttar Pradesh",
       story: "Abdul ran a humble nihari stall in old Lucknow, passed down from his father. But what made it legendary was his garam masala — a deep, earthy blend of 17 slow-roasted spices. He was skeptical of selling it outside. But Virasaat helped him brand it as 'Abdul Bhai ka Raaz', and gave him QR code-based packaging with a short video of his cooking story. Orders came in from expats craving home flavors. Now he's a weekend YouTube chef and a proud business owner.",
       topSeller: "Abdul Bhai ka Raaz – Nihari Masala", earnings: "International orders from expats",
-      subscribers: 89, image: "/assets/images/garam_masala_abdul.jpeg", icon: "📦"
+      subscribers: 89, image: "/assets/images/garam_masala_abdul.jpeg", icon: "Package"
     },
     {
       id: 3, vendor: "Sita & Gita", title: "The Spice Sisters of Kolhapur",
       location: "Kolhapur, Maharashtra",
       story: "Twins Sita and Gita inherited their grandmother's fiery Kolhapuri chutney masala recipe. They sold it in plastic packets outside a temple, barely earning ₹300/day. After joining Virasaat, they were guided to make cleaner labels, use eco-friendly jars, and tell their grandma's story on the label. The masala went viral on Instagram, and now they earn 10x more, collaborating with home chefs and even supplying to a Maharashtrian restaurant in Singapore.",
       topSeller: "Aaji's Teekhat Kolhapuri Masala", earnings: "10x increase in daily earnings",
-      subscribers: 234, image: "/assets/images/kolhapuri_chutney_sitagita.jpeg", icon: "🌶️"
+      subscribers: 234, image: "/assets/images/kolhapuri_chutney_sitagita.jpeg", icon: "Flame"
     },
     {
       id: 4, vendor: "Kashi Yadav", title: "The Train Pantry Legend of Varanasi",
       location: "Varanasi, Uttar Pradesh",
       story: "Kashi sold poha and chai on trains. But regulars kept asking about the chaat masala he sprinkled — it had a unique citrusy punch. He joined Virasaat through a vendor drive and started bottling his spice under the name 'TrainWale Chaat Masale'. Travelers recognized the branding, and demand exploded online. He's no longer on platforms but runs a full spice unit with his cousin and dreams of opening a railway-themed café.",
       topSeller: "TrainWale Chaat Masale – Tang with a Twist", earnings: "Full spice unit business",
-      subscribers: 67, image: "/assets/images/chaatmasala_kashi.jpeg", icon: "🧂"
+      subscribers: 67, image: "/assets/images/chaatmasala_kashi.jpeg", icon: "Soup"
     },
     {
       id: 5, vendor: "Meenakshi Amma", title: "The Sambhar Sage of Madurai",
       location: "Madurai, Tamil Nadu",
       story: "Meenakshi Amma's sambhar stall was popular in Madurai's flower market, but her signature sambhar podi had no label, no name — just legacy. After a college student helped her onboard Virasaat, she named it 'Thatha's Sambhar Secret' in honor of her late husband. With support from the platform, she included handwritten recipes in each package. Now, she receives thank-you letters from Tamil families abroad, and her granddaughter manages their growing orders.",
       topSeller: "Thatha's Sambhar Secret – Madurai Blend", earnings: "International recognition",
-      subscribers: 123, image: "/assets/images/sambhar_podi_meenakshi.jpeg", icon: "🍲"
+      subscribers: 123, image: "/assets/images/sambhar_podi_meenakshi.jpeg", icon: "CookingPot"
     }
   ];
 
@@ -189,7 +194,7 @@ const Virasaat = () => {
   };
 
   const handleSubscriberSubmit = (formData) => {
-    alert(`Subscription request sent to ${formData.masterVendor}! They will contact you within 24 hours.`);
+    toast.success(`Request sent to ${formData.masterVendor}. They usually reply within 24 hours.`);
     setShowSubscriberModal(false);
   };
 
@@ -204,8 +209,9 @@ const Virasaat = () => {
   });
 
   const tabs = [
-    { id: 'browse',  label: 'Browse Legacies', icon: 'Crown',    count: legacyIngredients.length },
-    { id: 'stories', label: 'Success Stories',  icon: 'BookOpen', count: successStories.length   },
+    { id: 'browse',    label: 'Browse Legacies', icon: 'Crown',    count: legacyIngredients.length },
+    { id: 'franchise', label: 'Cart Franchise',  icon: 'Store',    count: 3                        },
+    { id: 'stories',   label: 'Success Stories', icon: 'BookOpen', count: successStories.length   },
   ];
 
   // ── Render ─────────────────────────────────────────────────────────────────
@@ -219,7 +225,7 @@ const Virasaat = () => {
       <Header />
 
       {/* ── Sticky page header ── */}
-      <div className="bg-card border-b border-border sticky top-0 z-40">
+      <div id="main-content" tabIndex={-1} className="outline-none bg-card border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -229,7 +235,7 @@ const Virasaat = () => {
               </Link>
               <div className="h-5 w-px bg-border" />
               <div className="flex items-center space-x-2">
-                <span className="text-xl">🏛️</span>
+                <Icon name="Landmark" size={20} className="text-turmeric-dark" />
                 <div>
                   <h1 className="text-lg font-bold text-card-foreground leading-tight">Virasaat</h1>
                   <p className="text-xs text-muted-foreground">Flavours Passed Down. Stories Sealed In</p>
@@ -247,13 +253,13 @@ const Virasaat = () => {
       <div className="container mx-auto px-4 py-6">
 
         {/* ── Hero banner ── */}
-        <div className="relative bg-gradient-to-br from-purple-700 via-purple-600 to-indigo-600 rounded-2xl p-6 md:p-8 mb-6 text-white overflow-hidden">
+        <div className="relative bg-gradient-to-br from-terracotta-dark via-terracotta to-chili rounded-2xl p-6 md:p-8 mb-6 text-white overflow-hidden">
           <div className="absolute inset-0 opacity-10 pointer-events-none">
             <div className="absolute -top-10 -right-10 w-72 h-72 rounded-full bg-white" />
             <div className="absolute -bottom-16 left-1/3 w-56 h-56 rounded-full bg-white" />
           </div>
           <div className="relative max-w-2xl">
-            <p className="text-purple-200 text-xs font-semibold uppercase tracking-widest mb-1">Heritage · Taste · Legacy</p>
+            <p className="text-terracotta-light text-xs font-semibold uppercase tracking-widest mb-1">Heritage · Taste · Legacy</p>
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
               Flavours Passed Down.<br />Stories Sealed In.
             </h2>
@@ -263,7 +269,7 @@ const Virasaat = () => {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setShowLicensorModal(true)}
-                className="flex items-center space-x-2 bg-white text-purple-700 hover:bg-purple-50 font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
+                className="flex items-center space-x-2 bg-white text-terracotta-dark hover:bg-terracotta-light font-semibold px-4 py-2 rounded-xl transition-colors text-sm"
               >
                 <Icon name="Crown" size={15} /><span>Become a Master Vendor</span>
               </button>
@@ -350,7 +356,7 @@ const Virasaat = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                 {filteredLegacies.map(legacy => {
-                  const cat = categoryConfig[legacy.category] || { label: legacy.category, bg: 'bg-gray-600' };
+                  const cat = categoryConfig[legacy.category] || { label: legacy.category, bg: 'bg-ink-medium' };
                   const savePct = Math.round(((legacy.originalPrice - legacy.subscriptionPrice) / legacy.originalPrice) * 100);
                   return (
                     <div key={legacy.id} className="bg-card rounded-xl border border-border overflow-hidden hover:shadow-lg transition-all duration-200 flex flex-col">
@@ -364,7 +370,14 @@ const Virasaat = () => {
                             {cat.label.toUpperCase()}
                           </span>
                         </div>
-                        <div className="absolute top-3 right-3">
+                        <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                          <button
+                            onClick={() => setProvenanceLegacy(legacy)}
+                            className="bg-turmeric/90 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 hover:bg-turmeric transition-colors"
+                            title="View provenance record"
+                          >
+                            <Icon name="Fingerprint" size={11} />Sealed
+                          </button>
                           <span className="bg-black/50 backdrop-blur-sm text-white px-2 py-1 rounded-full text-xs flex items-center gap-1">
                             <Icon name="Users" size={11} />{legacy.subscribers}
                           </span>
@@ -378,7 +391,7 @@ const Virasaat = () => {
                             <span className="text-sm font-medium truncate max-w-[140px]">{legacy.masterVendor}</span>
                           </div>
                           <div className="flex items-center space-x-1">
-                            <Icon name="Star" size={12} className="text-yellow-400 fill-current" />
+                            <Icon name="Star" size={12} className="text-turmeric fill-current" />
                             <span className="text-sm">{legacy.masterVendorRating}</span>
                           </div>
                         </div>
@@ -401,13 +414,13 @@ const Virasaat = () => {
                         <div className="flex items-end justify-between mb-4">
                           <div>
                             <div className="flex items-baseline gap-2">
-                              <span className="text-xl font-bold text-purple-600">₹{legacy.subscriptionPrice}</span>
+                              <span className="text-xl font-bold text-terracotta">₹{legacy.subscriptionPrice}</span>
                               <span className="text-xs text-muted-foreground line-through">₹{legacy.originalPrice}</span>
                             </div>
                             <span className="text-xs text-muted-foreground">per month</span>
                           </div>
                           <div className="text-right space-y-1">
-                            <div className="bg-purple-50 border border-purple-200 text-purple-700 text-xs font-semibold px-2 py-0.5 rounded-full">
+                            <div className="bg-terracotta-light border border-terracotta/30 text-terracotta-dark text-xs font-semibold px-2 py-0.5 rounded-full">
                               Save {savePct}%
                             </div>
                             <div className="text-xs text-muted-foreground">License: ₹{legacy.licensePrice}</div>
@@ -426,7 +439,7 @@ const Virasaat = () => {
                           <Button
                             size="sm"
                             onClick={() => { setSelectedLegacy(legacy); setShowSubscriberModal(true); }}
-                            className="flex-1 bg-purple-600 hover:bg-purple-700"
+                            className="flex-1 bg-terracotta hover:bg-terracotta-dark"
                           >
                             <Icon name="Star" size={14} className="mr-1" />Subscribe
                           </Button>
@@ -438,6 +451,13 @@ const Virasaat = () => {
               </div>
             )}
           </>
+        )}
+
+        {/* ══════════════════════════════════════════════════════════
+            Cart Franchise Tab
+        ══════════════════════════════════════════════════════════ */}
+        {activeTab === 'franchise' && (
+          <FranchiseSection onBecomeLicensor={() => setShowLicensorModal(true)} />
         )}
 
         {/* ══════════════════════════════════════════════════════════
@@ -454,8 +474,8 @@ const Virasaat = () => {
                 { value: '25+',   label: 'Cities Covered',      icon: 'Globe'      },
               ].map(stat => (
                 <div key={stat.label} className="bg-card border border-border rounded-xl p-4 text-center">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mx-auto mb-2">
-                    <Icon name={stat.icon} size={16} className="text-purple-600" />
+                  <div className="w-8 h-8 bg-terracotta-light rounded-lg flex items-center justify-center mx-auto mb-2">
+                    <Icon name={stat.icon} size={16} className="text-terracotta-dark" />
                   </div>
                   <div className="text-xl font-bold text-card-foreground">{stat.value}</div>
                   <div className="text-xs text-muted-foreground mt-0.5">{stat.label}</div>
@@ -473,7 +493,7 @@ const Virasaat = () => {
                     <img src={story.image} alt={story.vendor} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                     <div className="absolute top-3 left-3">
-                      <span className="bg-green-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">
+                      <span className="bg-leaf text-white px-2.5 py-1 rounded-full text-xs font-semibold">
                         SUCCESS STORY
                       </span>
                     </div>
@@ -484,7 +504,9 @@ const Virasaat = () => {
                     </div>
                     <div className="absolute bottom-3 left-4 text-white">
                       <div className="flex items-center gap-2">
-                        <span className="text-2xl">{story.icon}</span>
+                        <span className="w-11 h-11 rounded-xl bg-turmeric-light text-turmeric-dark flex items-center justify-center flex-shrink-0">
+                          <Icon name={story.icon} size={20} />
+                        </span>
                         <div>
                           <p className="font-semibold text-sm leading-tight">{story.vendor}</p>
                           <p className="text-xs opacity-80">{story.location}</p>
@@ -500,14 +522,14 @@ const Virasaat = () => {
 
                     <div className="bg-muted/50 rounded-lg p-3 mb-3 grid grid-cols-2 gap-y-1.5 text-xs">
                       <span className="text-muted-foreground">Top Seller</span>
-                      <span className="font-medium text-purple-600 text-right truncate">{story.topSeller}</span>
+                      <span className="font-medium text-terracotta text-right truncate">{story.topSeller}</span>
                       <span className="text-muted-foreground">Achievement</span>
-                      <span className="font-semibold text-green-600 text-right">{story.earnings}</span>
+                      <span className="font-semibold text-leaf-dark text-right">{story.earnings}</span>
                     </div>
 
                     <button
                       onClick={() => { setSelectedStory(story); setShowStoryModal(true); }}
-                      className="mt-auto flex items-center justify-center gap-2 w-full border border-purple-300 text-purple-600 hover:bg-purple-50 rounded-xl py-2 text-sm font-medium transition-colors"
+                      className="mt-auto flex items-center justify-center gap-2 w-full border border-terracotta/40 text-terracotta hover:bg-terracotta-light rounded-xl py-2 text-sm font-medium transition-colors"
                     >
                       <Icon name="BookOpen" size={14} />Read Full Story
                     </button>
@@ -517,7 +539,7 @@ const Virasaat = () => {
             </div>
 
             {/* CTA */}
-            <div className="bg-gradient-to-br from-purple-700 via-purple-600 to-indigo-600 rounded-2xl p-6 md:p-8 text-white text-center">
+            <div className="bg-gradient-to-br from-terracotta-dark via-terracotta to-chili rounded-2xl p-6 md:p-8 text-white text-center">
               <h3 className="text-xl font-bold mb-2">Ready to Create Your Own Success Story?</h3>
               <p className="text-sm opacity-90 mb-5 max-w-md mx-auto">
                 Join hundreds of vendors who have transformed their street food secrets into thriving businesses.
@@ -525,7 +547,7 @@ const Virasaat = () => {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={() => setShowLicensorModal(true)}
-                  className="flex items-center justify-center gap-2 bg-white text-purple-700 hover:bg-purple-50 font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+                  className="flex items-center justify-center gap-2 bg-white text-terracotta-dark hover:bg-terracotta-light font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
                 >
                   <Icon name="Crown" size={15} /><span>List Your Legacy</span>
                 </button>
@@ -555,6 +577,12 @@ const Virasaat = () => {
           onSubscribe={() => { setShowDetailsModal(false); setShowSubscriberModal(true); }}
         />
       )}
+      {provenanceLegacy && (
+        <ProvenanceModal
+          legacy={provenanceLegacy}
+          onClose={() => setProvenanceLegacy(null)}
+        />
+      )}
       {showStoryModal && selectedStory && (
         <StoryModal
           story={selectedStory}
@@ -579,7 +607,7 @@ const LicensorModal = ({ onClose, onSubmit }) => {
   const set = (k, v) => setFormData(p => ({ ...p, [k]: v }));
 
   return (
-    <ModalWrap onClose={onClose} title="🏛️ List Your Legacy" wide>
+    <ModalWrap onClose={onClose} title="List Your Legacy" wide>
       <form onSubmit={e => { e.preventDefault(); onSubmit(formData); }} className="p-6 space-y-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
@@ -648,7 +676,7 @@ const LicensorModal = ({ onClose, onSubmit }) => {
         </div>
         <div className="flex space-x-3 pt-2">
           <Button type="button" variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-          <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700">
+          <Button type="submit" className="flex-1 bg-terracotta hover:bg-terracotta-dark">
             <Icon name="Crown" size={15} className="mr-2" />List My Legacy
           </Button>
         </div>
@@ -668,12 +696,12 @@ const SubscriberModal = ({ onClose, onSubmit, selectedLegacy }) => {
   const set = (k, v) => setFormData(p => ({ ...p, [k]: v }));
 
   return (
-    <ModalWrap onClose={onClose} title="⭐ Subscribe to Legacy">
+    <ModalWrap onClose={onClose} title="Subscribe to Legacy">
       {selectedLegacy && (
-        <div className="px-6 py-2.5 bg-purple-50 border-b border-purple-100">
-          <p className="text-sm text-purple-700">
+        <div className="px-6 py-2.5 bg-terracotta-light border-b border-terracotta/20">
+          <p className="text-sm text-terracotta-dark">
             <span className="font-medium">{selectedLegacy.name}</span>
-            <span className="text-purple-500"> by {selectedLegacy.masterVendor}</span>
+            <span className="text-terracotta"> by {selectedLegacy.masterVendor}</span>
           </p>
         </div>
       )}
@@ -706,7 +734,7 @@ const SubscriberModal = ({ onClose, onSubmit, selectedLegacy }) => {
         </div>
         <div className="flex space-x-3 pt-2">
           <Button type="button" variant="outline" onClick={onClose} className="flex-1">Cancel</Button>
-          <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700">
+          <Button type="submit" className="flex-1 bg-terracotta hover:bg-terracotta-dark">
             <Icon name="Star" size={15} className="mr-2" />Subscribe
           </Button>
         </div>
@@ -719,7 +747,7 @@ const SubscriberModal = ({ onClose, onSubmit, selectedLegacy }) => {
 // Legacy Details Modal
 // ══════════════════════════════════════════════════════════════════════════════
 const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
-  <ModalWrap onClose={onClose} title={`🏛️ ${legacy.name}`} wide>
+  <ModalWrap onClose={onClose} title={legacy.name} wide>
     <div className="p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -728,7 +756,7 @@ const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
           <div className="relative h-56 bg-muted rounded-xl overflow-hidden mb-4">
             <img src={legacy.image} alt={legacy.name} className="w-full h-full object-cover" />
             <div className="absolute top-3 left-3">
-              <span className="bg-purple-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">LEGENDARY</span>
+              <span className="bg-terracotta text-white px-2.5 py-1 rounded-full text-xs font-semibold">LEGENDARY</span>
             </div>
           </div>
           <div className="bg-muted/50 rounded-xl p-4 mb-4 space-y-2 text-sm">
@@ -749,7 +777,7 @@ const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
             {[
               ['Original Price', `₹${legacy.originalPrice}`,     'line-through text-muted-foreground'],
               ['License Price',  `₹${legacy.licensePrice}`,      'font-medium'                       ],
-              ['Monthly Sub.',   `₹${legacy.subscriptionPrice}`, 'font-bold text-purple-600'         ],
+              ['Monthly Sub.',   `₹${legacy.subscriptionPrice}`, 'font-bold text-terracotta'         ],
             ].map(([k, v, cls]) => (
               <div key={k} className="flex justify-between">
                 <span className="text-muted-foreground">{k}</span>
@@ -793,7 +821,7 @@ const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
                     <span className="text-sm font-medium text-card-foreground">{t.vendor}</span>
                     <div className="flex items-center gap-0.5">
                       {Array.from({ length: t.rating }).map((_, j) => (
-                        <Icon key={j} name="Star" size={11} className="text-yellow-500 fill-current" />
+                        <Icon key={j} name="Star" size={11} className="text-turmeric-dark fill-current" />
                       ))}
                     </div>
                   </div>
@@ -803,7 +831,7 @@ const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
             </div>
           </div>
 
-          <Button onClick={onSubscribe} className="w-full bg-purple-600 hover:bg-purple-700">
+          <Button onClick={onSubscribe} className="w-full bg-terracotta hover:bg-terracotta-dark">
             <Icon name="Star" size={15} className="mr-2" />Subscribe to This Legacy
           </Button>
         </div>
@@ -816,7 +844,7 @@ const DetailsModal = ({ legacy, onClose, onSubscribe }) => (
 // Full Story Modal (extracted from inline JSX)
 // ══════════════════════════════════════════════════════════════════════════════
 const StoryModal = ({ story, onClose, onListLegacy }) => (
-  <ModalWrap onClose={onClose} title={`${story.icon} ${story.vendor}`} wide>
+  <ModalWrap onClose={onClose} title={story.vendor} wide>
     <div className="p-6">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 
@@ -825,7 +853,7 @@ const StoryModal = ({ story, onClose, onListLegacy }) => (
           <div className="relative h-56 bg-muted rounded-xl overflow-hidden mb-4">
             <img src={story.image} alt={story.vendor} className="w-full h-full object-cover" />
             <div className="absolute top-3 left-3">
-              <span className="bg-green-600 text-white px-2.5 py-1 rounded-full text-xs font-semibold">SUCCESS STORY</span>
+              <span className="bg-leaf text-white px-2.5 py-1 rounded-full text-xs font-semibold">SUCCESS STORY</span>
             </div>
           </div>
           <div className="bg-muted/50 rounded-xl p-4 mb-4 space-y-2 text-sm">
@@ -833,7 +861,7 @@ const StoryModal = ({ story, onClose, onListLegacy }) => (
             {[
               ['Location',    story.location,    ''],
               ['Subscribers', `${story.subscribers} vendors`, ''],
-              ['Achievement', story.earnings,    'text-green-600'],
+              ['Achievement', story.earnings,    'text-leaf-dark'],
             ].map(([k, v, cls]) => (
               <div key={k} className="flex justify-between">
                 <span className="text-muted-foreground">{k}</span>
@@ -841,9 +869,9 @@ const StoryModal = ({ story, onClose, onListLegacy }) => (
               </div>
             ))}
           </div>
-          <div className="bg-purple-50 rounded-xl p-4 border border-purple-200">
-            <h3 className="font-semibold text-purple-800 text-sm mb-1">Top Selling Product</h3>
-            <p className="text-purple-700 font-medium text-sm">{story.topSeller}</p>
+          <div className="bg-terracotta-light rounded-xl p-4 border border-terracotta/30">
+            <h3 className="font-semibold text-terracotta-dark text-sm mb-1">Top Selling Product</h3>
+            <p className="text-terracotta-dark font-medium text-sm">{story.topSeller}</p>
           </div>
         </div>
 
@@ -858,9 +886,9 @@ const StoryModal = ({ story, onClose, onListLegacy }) => (
             <h3 className="font-semibold text-card-foreground mb-3">Impact on Virasaat</h3>
             <div className="space-y-3">
               {[
-                { icon: 'TrendingUp', bg: 'bg-green-100',  text: 'text-green-600',  title: 'Revenue Growth',   desc: 'Significant increase in earnings'               },
-                { icon: 'Users',      bg: 'bg-blue-100',   text: 'text-blue-600',   title: 'Vendor Network',   desc: `${story.subscribers} vendors using this legacy` },
-                { icon: 'Globe',      bg: 'bg-purple-100', text: 'text-purple-600', title: 'Geographic Reach', desc: 'Expanded beyond local market'                   },
+                { icon: 'TrendingUp', bg: 'bg-leaf-light',  text: 'text-leaf-dark',  title: 'Revenue Growth',   desc: 'Significant increase in earnings'               },
+                { icon: 'Users',      bg: 'bg-leaf-light',   text: 'text-leaf-dark',   title: 'Vendor Network',   desc: `${story.subscribers} vendors using this legacy` },
+                { icon: 'Globe',      bg: 'bg-terracotta-light', text: 'text-terracotta', title: 'Geographic Reach', desc: 'Expanded beyond local market'                   },
               ].map(item => (
                 <div key={item.title} className="flex items-center space-x-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${item.bg}`}>
@@ -875,13 +903,13 @@ const StoryModal = ({ story, onClose, onListLegacy }) => (
             </div>
           </div>
 
-          <div className="bg-gradient-to-br from-purple-700 to-indigo-600 rounded-xl p-4 text-white">
+          <div className="bg-gradient-to-br from-terracotta-dark to-chili rounded-xl p-4 text-white">
             <h3 className="font-semibold mb-1">Inspired by this story?</h3>
             <p className="text-xs opacity-90 mb-3">Transform your own street food secrets into a thriving business.</p>
             <div className="flex gap-2">
               <button
                 onClick={onListLegacy}
-                className="flex items-center gap-1.5 bg-white text-purple-700 hover:bg-purple-50 font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors"
+                className="flex items-center gap-1.5 bg-white text-terracotta-dark hover:bg-terracotta-light font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors"
               >
                 <Icon name="Crown" size={13} />List Your Legacy
               </button>

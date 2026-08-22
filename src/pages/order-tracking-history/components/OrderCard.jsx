@@ -13,7 +13,7 @@ const OrderCard = ({ order, onViewDetails, onReorder, onRateOrder, onContactSupp
       case 'confirmed':
         return 'text-primary bg-primary/10 border-primary/20';
       case 'out for delivery':
-        return 'text-blue-600 bg-blue-100 border-blue-200';
+        return 'text-terracotta bg-terracotta-light border-terracotta/25';
       case 'completed':
         return 'text-success bg-success/10 border-success/20';
       case 'cancelled':
@@ -138,18 +138,18 @@ const OrderCard = ({ order, onViewDetails, onReorder, onRateOrder, onContactSupp
 
         {/* Delivery Info */}
         {order.deliveryFee > 0 && (
-          <div className="mb-3 p-2 bg-blue-50 border border-blue-200 rounded-lg">
+          <div className="mb-3 p-2 bg-terracotta-light/60 border border-terracotta/25 rounded-lg">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-2">
-                <Icon name="Truck" size={12} className="text-blue-600" />
-                <span className="text-xs text-blue-700">Delivery Fee: ₹{order.deliveryFee}</span>
+                <Icon name="Truck" size={12} className="text-terracotta" />
+                <span className="text-xs text-terracotta-dark">Delivery Fee: ₹{order.deliveryFee}</span>
               </div>
               <div className="flex items-center space-x-1">
-                <Icon name="Clock" size={10} className="text-blue-500" />
-                <span className="text-xs text-blue-600">{order.estimatedDelivery || '30-45 min'}</span>
+                <Icon name="Clock" size={10} className="text-terracotta" />
+                <span className="text-xs text-terracotta">{order.estimatedDelivery || '30-45 min'}</span>
               </div>
             </div>
-            <div className="flex items-center space-x-4 mt-1 text-xs text-blue-600">
+            <div className="flex items-center space-x-4 mt-1 text-xs text-terracotta">
               <div className="flex items-center space-x-1">
                 <Icon name="Shield" size={10} />
                 <span>Insured</span>
@@ -272,49 +272,49 @@ const OrderCard = ({ order, onViewDetails, onReorder, onRateOrder, onContactSupp
 
             {/* Delivery Details */}
             {order.deliveryFee > 0 && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <div className="bg-terracotta-light/60 border border-terracotta/25 rounded-lg p-3">
                 <div className="flex items-center space-x-2 mb-3">
-                  <Icon name="Truck" size={16} className="text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Delivery Information</span>
+                  <Icon name="Truck" size={16} className="text-terracotta" />
+                  <span className="text-sm font-medium text-terracotta-dark">Delivery Information</span>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-3 text-xs">
                   <div className="flex items-center space-x-2">
-                    <Icon name="Clock" size={12} className="text-blue-500" />
+                    <Icon name="Clock" size={12} className="text-terracotta" />
                     <div>
-                      <span className="text-blue-600">Est. Delivery</span>
-                      <p className="text-blue-700 font-medium">{order.estimatedDelivery || '30-45 min'}</p>
+                      <span className="text-terracotta">Est. Delivery</span>
+                      <p className="text-terracotta-dark font-medium">{order.estimatedDelivery || '30-45 min'}</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Icon name="MapPin" size={12} className="text-blue-500" />
+                    <Icon name="MapPin" size={12} className="text-terracotta" />
                     <div>
-                      <span className="text-blue-600">Distance</span>
-                      <p className="text-blue-700 font-medium">2.5 km</p>
+                      <span className="text-terracotta">Distance</span>
+                      <p className="text-terracotta-dark font-medium">2.5 km</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Icon name="Shield" size={12} className="text-blue-500" />
+                    <Icon name="Shield" size={12} className="text-terracotta" />
                     <div>
-                      <span className="text-blue-600">Insurance</span>
-                      <p className="text-blue-700 font-medium">Included</p>
+                      <span className="text-terracotta">Insurance</span>
+                      <p className="text-terracotta-dark font-medium">Included</p>
                     </div>
                   </div>
                   <div className="flex items-center space-x-2">
-                    <Icon name="Package" size={12} className="text-blue-500" />
+                    <Icon name="Package" size={12} className="text-terracotta" />
                     <div>
-                      <span className="text-blue-600">Packaging</span>
-                      <p className="text-blue-700 font-medium">Eco-friendly</p>
+                      <span className="text-terracotta">Packaging</span>
+                      <p className="text-terracotta-dark font-medium">Eco-friendly</p>
                     </div>
                   </div>
                 </div>
                 
-                <div className="mt-3 p-2 bg-blue-100 rounded-md">
+                <div className="mt-3 p-2 bg-terracotta-light rounded-md">
                   <div className="flex items-center space-x-1 mb-1">
-                    <Icon name="CheckCircle" size={10} className="text-blue-600" />
-                    <span className="text-xs font-medium text-blue-700">Delivery Features</span>
+                    <Icon name="CheckCircle" size={10} className="text-terracotta" />
+                    <span className="text-xs font-medium text-terracotta-dark">Delivery Features</span>
                   </div>
-                  <div className="text-xs text-blue-600 space-y-1">
+                  <div className="text-xs text-terracotta space-y-1">
                     <div>• Contactless delivery for safety</div>
                     <div>• Real-time tracking updates</div>
                     <div>• Quality guarantee on all items</div>

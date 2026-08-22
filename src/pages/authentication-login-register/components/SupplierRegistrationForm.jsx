@@ -155,7 +155,9 @@ const SupplierRegistrationForm = ({ formData, onChange, errors }) => {
       <Select
         label={labels[currentLanguage].specialization}
         options={specializationOptions}
-        value={formData.specialization || ''}
+        // A multi-select holds a list. Seeding it with '' made React reject the
+        // value and left the field in an inconsistent state.
+        value={formData.specialization || []}
         onChange={(value) => handleInputChange('specialization', value)}
         placeholder={currentLanguage === 'en' ? 'Select specialization' : 'विशेषज्ञता चुनें'}
         error={errors.specialization}

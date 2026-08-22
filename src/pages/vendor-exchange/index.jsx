@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Helmet } from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
@@ -7,6 +7,7 @@ import Select from '../../components/ui/Select';
 import Icon from '../../components/AppIcon';
 import Header from '../../components/ui/Header';
 import { useCart } from '../../contexts/CartContext';
+import AutoExchangeBanner from './components/AutoExchangeBanner';
 
 const VendorExchange = () => {
   const { cartCount } = useCart();
@@ -142,6 +143,20 @@ const VendorExchange = () => {
     };
     setSurplusItems(prev => [newItem, ...prev]);
     setShowSurplusModal(false);
+  };
+
+  const handleAutoPublish = (formData) => {
+    const newItem = {
+      id: Date.now(),
+      ...formData,
+      distance: 'Your stall',
+      vendorName: "Your Stall",
+      vendorRating: 4.5,
+      vendorPhone: "+91 98765 43217",
+      postedAt: "Just now"
+    };
+    setSurplusItems(prev => [newItem, ...prev]);
+    setActiveTab('surplus');
   };
 
   const handlePostNeed = (formData) => {
@@ -307,7 +322,7 @@ const VendorExchange = () => {
       <Header />
 
       {/* Page Header */}
-      <div className="bg-card border-b border-border sticky top-0 z-40">
+      <div id="main-content" tabIndex={-1} className="outline-none bg-card border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-4">
@@ -317,7 +332,7 @@ const VendorExchange = () => {
               </Link>
               <div className="h-6 w-px bg-border"></div>
               <div>
-                <h1 className="text-xl font-bold text-card-foreground">🔄 Vendor Exchange</h1>
+                <h1 className="text-xl font-bold text-card-foreground">Vendor Exchange</h1>
                 <p className="text-sm text-muted-foreground">Circular economy for street vendors</p>
               </div>
             </div>
@@ -337,6 +352,9 @@ const VendorExchange = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
+        {/* Auto-Exchange — predicted surplus, pre-drafted listings */}
+        <AutoExchangeBanner onPublish={handleAutoPublish} />
+
         {/* Search and Filter */}
         <div className="bg-card rounded-lg border border-border p-4 mb-6">
           <div className="flex flex-col md:flex-row gap-4">
@@ -369,15 +387,15 @@ const VendorExchange = () => {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-3 mb-6">
-          <Button onClick={() => setShowSurplusModal(true)} className="bg-green-600 hover:bg-green-700">
+          <Button onClick={() => setShowSurplusModal(true)} className="bg-leaf hover:bg-leaf-dark">
             <Icon name="Plus" size={16} className="mr-2" />
             Post Surplus
           </Button>
-          <Button onClick={() => setShowNeedModal(true)} variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+          <Button onClick={() => setShowNeedModal(true)} variant="outline" className="border-terracotta text-terracotta hover:bg-terracotta-light">
             <Icon name="AlertTriangle" size={16} className="mr-2" />
             Urgent Need
           </Button>
-          <Button onClick={() => setShowTradeModal(true)} variant="outline" className="border-purple-500 text-purple-600 hover:bg-purple-50">
+          <Button onClick={() => setShowTradeModal(true)} variant="outline" className="border-turmeric text-turmeric hover:bg-turmeric-light">
             <Icon name="RefreshCw" size={16} className="mr-2" />
             Propose Trade
           </Button>
@@ -484,7 +502,7 @@ const VendorExchange = () => {
                     <div>
                       <p className="text-sm font-medium text-card-foreground">{item.vendorName}</p>
                       <div className="flex items-center space-x-1">
-                        <Icon name="Star" size={12} className="text-yellow-500 fill-current" />
+                        <Icon name="Star" size={12} className="text-turmeric-dark fill-current" />
                         <span className="text-xs text-muted-foreground">{item.vendorRating}</span>
                       </div>
                     </div>
@@ -823,7 +841,7 @@ const PostSurplusModal = ({ onClose, onSubmit }) => {
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-green-600 hover:bg-green-700">
+            <Button type="submit" className="flex-1 bg-leaf hover:bg-leaf-dark">
               Post Surplus
             </Button>
           </div>
@@ -914,7 +932,7 @@ const PostNeedModal = ({ onClose, onSubmit }) => {
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-orange-600 hover:bg-orange-700">
+            <Button type="submit" className="flex-1 bg-terracotta hover:bg-terracotta-dark">
               Broadcast Need
             </Button>
           </div>
@@ -991,7 +1009,7 @@ const ProposeTradeModal = ({ onClose, onSubmit }) => {
             <Button type="button" variant="outline" onClick={onClose} className="flex-1">
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700">
+            <Button type="submit" className="flex-1 bg-turmeric hover:bg-turmeric/80">
               Propose Trade
             </Button>
           </div>

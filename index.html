@@ -3,13 +3,65 @@
 
 <head>
   <meta charset="utf-8" />
-  <title>apna-mandi</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Web site created using create-react-app" />
-  <link rel="icon" href="/favicon.ico" />
+  <title>Apna Mandi — Street Food OS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <!-- The browser chrome tints to match the app rather than sitting as a white
+       strip above a dark page. -->
+  <meta name="theme-color" content="#C0532E" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#1E1712" media="(prefers-color-scheme: dark)" />
+  <meta name="description" content="Apna Mandi connects street food vendors with karigars, suppliers and each other — kitchen help on demand, surplus exchange, and recipe legacies." />
+  <meta name="color-scheme" content="light dark" />
+
+  <!-- SVG first so the icon stays crisp on any density; the .ico is the
+       fallback for browsers that still only take one. -->
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="alternate icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+  <!-- Installed on an iPhone, Safari ignores the manifest and reads these. -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Apna Mandi" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <!-- Link previews. This app gets shared as a URL in WhatsApp and in pitches
+       far more often than it gets found in search, and an unfurl with no image
+       reads as a dead link. -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Apna Mandi" />
+  <meta property="og:title" content="Apna Mandi — Street Food OS" />
+  <meta property="og:description"
+    content="Kitchen help on demand, surplus exchange, wholesale deals and recipe legacies — for India's street food economy." />
+  <!-- Relative because the deploy domain isn't fixed yet. Most unfurlers
+       resolve it; a few (older Slack, some WhatsApp builds) want an absolute
+       URL, so make this https://your-domain/icon-512.png at launch. -->
+  <meta property="og:image" content="/icon-512.png" />
+  <meta property="og:image:alt" content="The Apna Mandi market-stall mark" />
+  <meta property="og:locale" content="en_IN" />
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Apna Mandi — Street Food OS" />
+  <meta name="twitter:description"
+    content="Kitchen help on demand, surplus exchange, wholesale deals and recipe legacies." />
+  <meta name="twitter:image" content="/icon-512.png" />
+  <script>
+    // Apply the saved theme before first paint to avoid a light-mode flash
+    try {
+      var t = localStorage.getItem('theme');
+      if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+    } catch (e) { }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Mukta:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="manifest" href="/manifest.json" />
-<script type="module" src="https://static.rocket.new/rocket-web.js?_cfg=https%3A%2F%2Fapnamandi6091back.builtwithrocket.new&_be=https%3A%2F%2Fapplication.rocket.new&_v=0.1.6"></script>
+  <!-- The Rocket preview tracker (static.rocket.new/rocket-web.js) used to load
+       here. It beaconed to application.rocket.new/preview/v1/track on every
+       page view: a third-party request carrying visitor data with no consent
+       step, a render-blocking external script, and a hard dependency on a host
+       outside your control. Restore this line only if you still publish to the
+       builtwithrocket.new preview environment and want its analytics. -->
 </head>
 
 <body>

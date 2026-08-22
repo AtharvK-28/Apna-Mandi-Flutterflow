@@ -8,7 +8,6 @@ const SupplierMapView = ({ suppliers, userLocation, className = '' }) => {
     // Mock map initialization - in real implementation, use Leaflet.js
     if (mapRef.current) {
       // This would be replaced with actual Leaflet map initialization
-      console.log('Initializing map with suppliers:', suppliers);
     }
   }, [suppliers]);
 

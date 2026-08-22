@@ -4,60 +4,101 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 142.1 76.2% 36.3%;
-    --primary-foreground: 355.7 100% 97.3%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 142.1 76.2% 36.3%;
-    --radius: 0.5rem;
-    --success: 142.1 76.2% 36.3%;
-    --success-foreground: 355.7 100% 97.3%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-    --error: 0 84.2% 60.2%;
-    --error-foreground: 210 40% 98%;
+    /* Brand palette (HSL triples) — light theme */
+    --paper: 37 54% 91%;
+    --paper-light: 43 100% 99%;
+    --paper-dark: 37 40% 85%;
+    --ink: 27 33% 13%;
+    --ink-light: 31 20% 35%;
+    --ink-medium: 32 17% 46%;
+    --terracotta: 15 61% 47%;
+    --terracotta-light: 22 70% 92%;
+    --terracotta-dark: 15 70% 36%;
+    --turmeric: 38 75% 56%;
+    --turmeric-light: 39 81% 90%;
+    --turmeric-dark: 36 80% 34%;
+    --leaf: 92 29% 44%;
+    --leaf-light: 87 36% 89%;
+    --leaf-dark: 95 35% 33%;
+    --chili: 6 63% 46%;
+    --chili-light: 9 78% 92%;
+
+    /* Semantic tokens, harmonized with the paper palette */
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: var(--paper-light);
+    --card-foreground: var(--ink);
+    --popover: var(--paper-light);
+    --popover-foreground: var(--ink);
+    --primary: var(--terracotta);
+    --primary-foreground: 40 100% 99%;
+    --secondary: var(--turmeric);
+    --secondary-foreground: var(--ink);
+    --muted: 36 35% 87%;
+    --muted-foreground: var(--ink-medium);
+    --accent: 36 35% 87%;
+    --accent-foreground: var(--ink);
+    --destructive: 5 63% 47%;
+    --destructive-foreground: 40 100% 99%;
+    --border: var(--paper-dark);
+    --input: var(--paper-dark);
+    --ring: var(--terracotta);
+    --radius: 0.75rem;
+    --success: 100 28% 40%;
+    --success-foreground: 40 100% 99%;
+    --warning: 38 75% 56%;
+    --warning-foreground: var(--ink);
+    --error: 5 63% 47%;
+    --error-foreground: 40 100% 99%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 142.1 70.6% 45.3%;
-    --primary-foreground: 144.9 80.4% 10%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 142.1 76.2% 36.3%;
-    --success: 142.1 70.6% 45.3%;
-    --success-foreground: 144.9 80.4% 10%;
-    --warning: 38 92% 50%;
-    --warning-foreground: 48 96% 89%;
-    --error: 0 62.8% 30.6%;
-    --error-foreground: 210 40% 98%;
+    /* Brand palette — warm dark theme.
+       "light" tokens become deep tints, "dark" tokens become bright accents,
+       so pairings like `bg-leaf-light text-leaf-dark` keep contrast in both themes. */
+    --paper: 24 30% 7%;
+    --paper-light: 24 24% 11%;
+    --paper-dark: 25 18% 18%;
+    --ink: 36 33% 91%;
+    --ink-light: 33 18% 74%;
+    --ink-medium: 30 13% 58%;
+    --terracotta: 15 68% 55%;
+    --terracotta-light: 16 45% 16%;
+    --terracotta-dark: 17 80% 68%;
+    --turmeric: 38 80% 58%;
+    --turmeric-light: 37 50% 15%;
+    --turmeric-dark: 40 85% 64%;
+    --leaf: 92 32% 50%;
+    --leaf-light: 94 28% 13%;
+    --leaf-dark: 95 42% 62%;
+    --chili: 6 70% 56%;
+    --chili-light: 7 48% 15%;
+
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: var(--paper-light);
+    --card-foreground: var(--ink);
+    --popover: var(--paper-light);
+    --popover-foreground: var(--ink);
+    --primary: var(--terracotta);
+    --primary-foreground: 40 100% 99%;
+    --secondary: var(--turmeric);
+    --secondary-foreground: 27 33% 13%;
+    --muted: 24 20% 15%;
+    --muted-foreground: var(--ink-medium);
+    --accent: 24 20% 15%;
+    --accent-foreground: var(--ink);
+    --destructive: 5 63% 50%;
+    --destructive-foreground: 40 100% 99%;
+    --border: var(--paper-dark);
+    --input: var(--paper-dark);
+    --ring: var(--terracotta);
+    --success: 100 30% 48%;
+    --success-foreground: 40 100% 99%;
+    --warning: 38 80% 58%;
+    --warning-foreground: 27 33% 13%;
+    --error: 5 63% 50%;
+    --error-foreground: 40 100% 99%;
   }
 }
 
@@ -68,7 +109,20 @@
   
   body {
     @apply bg-background text-foreground transition-colors duration-300;
+    font-family: 'Mukta', sans-serif;
     font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Subtle warm wash so large paper surfaces don't read flat */
+    background-image:
+      radial-gradient(1100px 500px at 85% -10%, hsl(var(--turmeric) / 0.07), transparent 60%),
+      radial-gradient(900px 420px at -10% 0%, hsl(var(--terracotta) / 0.05), transparent 55%);
+    background-attachment: fixed;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Baloo 2', cursive;
+    letter-spacing: -0.01em;
   }
 
   /* Smooth scrolling */
@@ -96,7 +150,7 @@
 
   /* Selection styles */
   ::selection {
-    @apply bg-primary/20 text-primary-foreground;
+    @apply bg-terracotta/25;
   }
 
   /* Focus styles */
@@ -270,6 +324,24 @@
     text-wrap: balance;
   }
 
+  /* Tactile press feedback for cards/buttons */
+  .press {
+    @apply transition-transform duration-150 active:scale-[0.98];
+  }
+
+  /* Warm card surface used across pages */
+  .card-warm {
+    @apply bg-paper-light border border-paper-dark/70 rounded-2xl shadow-[0_1px_2px_rgba(44,32,22,0.06),0_8px_24px_-16px_rgba(44,32,22,0.25)];
+  }
+
+  /* Horizontal snap row for mobile carousels */
+  .snap-row {
+    @apply flex gap-3 overflow-x-auto scrollbar-hide snap-x snap-mandatory -mx-4 px-4;
+  }
+  .snap-row > * {
+    @apply snap-start flex-shrink-0;
+  }
+
   /* Animation utilities */
   .animate-in {
     animation: fadeIn 0.5s ease-in-out;
@@ -309,5 +381,41 @@
   
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
+  }
+}
+
+@layer base {
+  /* Respect the OS "reduce motion" setting. The app leans on pulses, bounces
+     and slide-ins; for anyone who gets motion sickness or has a vestibular
+     disorder those are not decoration, they are a barrier. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Keyboard users need to see where they are. Focus rings were only defined
+     on a few primitives, so tabbing through a page went invisible in places. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--terracotta));
+    outline-offset: 2px;
+    border-radius: 0.35rem;
+  }
+}
+
+@layer components {
+  /* Lets a keyboard or screen-reader user jump past the nav straight to the
+     page content, instead of tabbing through six nav links on every route. */
+  .skip-link {
+    @apply sr-only;
+  }
+
+  .skip-link:focus {
+    @apply not-sr-only fixed left-4 top-4 z-[300] rounded-xl bg-terracotta px-4 py-2.5 text-sm font-bold text-white shadow-lg;
   }
 }

@@ -11,6 +11,9 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
   const [showCreateGroup, setShowCreateGroup] = useState(false);
   const [groupLink, setGroupLink] = useState('');
   const [joinedGroupIds, setJoinedGroupIds] = useState(new Set());
+  // Browser alert() blocks the page and cannot be styled or dismissed by
+  // keyboard on mobile; an inline status message says the same thing.
+  const [status, setStatus] = useState(null);
   const expandedRef = useRef(null);
 
   // Simulate countdown timer
@@ -169,13 +172,19 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
       onJoinGroup(selectedGroup);
     }
     
-    alert(`🎉 Successfully joined group for ${selectedGroup.supplierName}! Group is now complete and your discount has been applied!`);
+    setStatus(`Joined the ${selectedGroup.supplierName} group. Your bulk discount is applied at checkout.`);
     setIsExpanded(false);
   };
 
-  const copyGroupLink = () => {
-    navigator.clipboard.writeText(groupLink);
-    alert('Group link copied to clipboard! Share this with other vendors to join your group.');
+  const copyGroupLink = async () => {
+    try {
+      await navigator.clipboard.writeText(groupLink);
+      setStatus('Link copied. Share it with nearby vendors to fill your group.');
+    } catch {
+      // Clipboard access is refused outside a secure context or without
+      // permission — show the link so it can still be copied by hand.
+      setStatus(`Copy this link manually: ${groupLink}`);
+    }
   };
 
   const isGroupJoined = (groupId) => joinedGroupIds.has(groupId);
@@ -184,19 +193,19 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
   const availableGroupsCount = demoSuggestions.filter(s => !isGroupJoined(s.id)).length;
 
   return (
-    <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-200 rounded-xl shadow-sm mb-6">
+    <div className="bg-gradient-to-br from-terracotta-light/60 via-paper-light to-turmeric-light/40 border border-terracotta/25 rounded-xl shadow-sm mb-6">
       {/* Dropdown Header */}
       <button
         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-        className="w-full p-6 flex items-center justify-between hover:bg-blue-100/50 transition-colors duration-200 rounded-xl"
+        className="w-full p-6 flex items-center justify-between hover:bg-terracotta-light/50 transition-colors duration-200 rounded-xl"
       >
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-100 rounded-lg">
-            <Icon name="Users" size={24} className="text-blue-600" />
+          <div className="p-2 bg-terracotta-light rounded-lg">
+            <Icon name="Users" size={24} className="text-terracotta" />
           </div>
           <div className="text-left">
-            <h3 className="text-xl font-bold text-gray-800">🚀 Group Buying Opportunities</h3>
-            <p className="text-sm text-gray-600">
+            <h3 className="text-xl font-bold text-ink">Group buying</h3>
+            <p className="text-sm text-ink-light">
               {joinedGroupsCount > 0 
                 ? `You've joined ${joinedGroupsCount} group${joinedGroupsCount > 1 ? 's' : ''} • ${availableGroupsCount} more available`
                 : `${availableGroupsCount} groups available • Join to unlock bulk discounts`
@@ -207,40 +216,40 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
         
         <div className="flex items-center space-x-3">
           {joinedGroupsCount > 0 && (
-            <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-medium">
+            <div className="bg-leaf-light text-leaf-dark px-3 py-1 rounded-full text-sm font-medium">
               +{joinedGroupsCount} joined
             </div>
           )}
           <div className={`transform transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}>
-            <Icon name="ChevronDown" size={20} className="text-gray-500" />
+            <Icon name="ChevronDown" size={20} className="text-ink-medium" />
           </div>
         </div>
       </button>
 
       {/* Dropdown Content */}
       {isDropdownOpen && (
-        <div className="px-6 pb-6 border-t border-blue-200">
+        <div className="px-6 pb-6 border-t border-terracotta/25">
           <div className="space-y-4 mt-4">
             {demoSuggestions.map((suggestion) => {
               const isJoined = isGroupJoined(suggestion.id);
               const isCompleted = isJoined || suggestion.currentMembers >= suggestion.requiredMembers;
               
               return (
-                <div key={suggestion.id} className={`border border-gray-200 rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 ${
-                  isCompleted ? 'bg-gray-50 opacity-75' : 'bg-white'
+                <div key={suggestion.id} className={`border border-paper-dark rounded-xl p-5 shadow-sm hover:shadow-lg transition-all duration-300 ${
+                  isCompleted ? 'bg-paper opacity-75' : 'bg-paper-light'
                 }`}>
                   {suggestion.isDemo && (
                     <div className="mb-3">
-                      <span className="bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 text-xs px-3 py-1 rounded-full font-medium border border-yellow-200">
-                        🎯 Demo - Add items to cart to see real suggestions
+                      <span className="bg-gradient-to-r from-turmeric-light to-terracotta-light text-turmeric-dark text-xs px-3 py-1 rounded-full font-medium border border-turmeric/30">
+                        Example — add items to your cart to see real suggestions
                       </span>
                     </div>
                   )}
                   
                   {isJoined && (
                     <div className="mb-3">
-                      <span className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium border border-green-200">
-                        ✅ Joined - Discount Applied
+                      <span className="bg-gradient-to-r from-leaf-light to-leaf-light text-leaf-dark text-xs px-3 py-1 rounded-full font-medium border border-leaf/30">
+                        Joined — discount applied
                       </span>
                     </div>
                   )}
@@ -249,15 +258,15 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                     <div className="flex-1">
                       <div className="flex items-center space-x-3 mb-3">
                         <div>
-                          <h4 className={`text-lg font-semibold ${isCompleted ? 'text-gray-500' : 'text-gray-800'}`}>
+                          <h4 className={`text-lg font-semibold ${isCompleted ? 'text-ink-medium' : 'text-ink'}`}>
                             {suggestion.supplierName}
                           </h4>
-                          <div className="flex items-center space-x-2 text-sm text-gray-500">
+                          <div className="flex items-center space-x-2 text-sm text-ink-medium">
                             <Icon name="MapPin" size={12} />
                             <span>{suggestion.location}</span>
                             <span>•</span>
                             <div className="flex items-center space-x-1">
-                              <Icon name="Star" size={12} className="text-yellow-500" />
+                              <Icon name="Star" size={12} className="text-turmeric" />
                               <span>{suggestion.rating}</span>
                             </div>
                             <span>•</span>
@@ -267,58 +276,58 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                       </div>
 
                       <div className="flex items-center space-x-3 mb-3">
-                        <span className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-700 text-sm px-3 py-1 rounded-full font-semibold border border-green-200">
+                        <span className="bg-gradient-to-r from-leaf-light to-leaf-light text-leaf-dark text-sm px-3 py-1 rounded-full font-semibold border border-leaf/30">
                           {suggestion.discount}% OFF
                         </span>
-                        <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-700 text-sm px-3 py-1 rounded-full font-semibold border border-blue-200">
+                        <span className="bg-gradient-to-r from-terracotta-light to-turmeric-light text-terracotta-dark text-sm px-3 py-1 rounded-full font-semibold border border-terracotta/25">
                           Save ₹{suggestion.potentialSavings.toFixed(0)}
                         </span>
-                        <span className="bg-gradient-to-r from-purple-100 to-pink-100 text-purple-700 text-sm px-3 py-1 rounded-full font-semibold border border-purple-200">
+                        <span className="bg-gradient-to-r from-chili-light to-terracotta-light text-chili text-sm px-3 py-1 rounded-full font-semibold border border-chili/30">
                           Split Delivery
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600 mb-3">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm text-ink-light mb-3">
                         <div className="flex items-center space-x-2">
-                          <Icon name="Users" size={14} className="text-blue-500" />
+                          <Icon name="Users" size={14} className="text-terracotta" />
                           <span>{isCompleted ? suggestion.requiredMembers : suggestion.currentMembers}/{suggestion.requiredMembers} vendors</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Icon name="Clock" size={14} className="text-orange-500" />
+                          <Icon name="Clock" size={14} className="text-terracotta" />
                           <span>{suggestion.timeLeft} left</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Icon name="Truck" size={14} className="text-green-500" />
+                          <Icon name="Truck" size={14} className="text-leaf" />
                           <span>₹{suggestion.deliveryFee} delivery</span>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <Icon name="Package" size={14} className="text-purple-500" />
+                          <Icon name="Package" size={14} className="text-chili" />
                           <span>{suggestion.commonItems.length} items</span>
                         </div>
                       </div>
 
-                      <div className="text-sm text-gray-600 mb-3">
+                      <div className="text-sm text-ink-light mb-3">
                         <strong>Common items:</strong> {suggestion.commonItems.join(', ')}
                       </div>
 
                       <div className="mb-3">
-                        <div className="flex justify-between text-sm text-gray-500 mb-1">
+                        <div className="flex justify-between text-sm text-ink-medium mb-1">
                           <span>Group Progress</span>
                           <span>{Math.round((isCompleted ? suggestion.requiredMembers : suggestion.currentMembers) / suggestion.requiredMembers * 100)}%</span>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-3">
+                        <div className="w-full bg-paper-dark rounded-full h-3">
                           <div 
                             className={`h-3 rounded-full transition-all duration-500 ${
                               isCompleted 
-                                ? 'bg-gradient-to-r from-green-500 to-emerald-500' 
-                                : 'bg-gradient-to-r from-blue-500 to-purple-500'
+                                ? 'bg-gradient-to-r from-leaf to-leaf/80' 
+                                : 'bg-gradient-to-r from-terracotta to-chili'
                             }`}
                             style={{ width: `${(isCompleted ? suggestion.requiredMembers : suggestion.currentMembers) / suggestion.requiredMembers * 100}%` }}
                           />
                         </div>
                       </div>
 
-                      <div className="text-sm text-gray-600">
+                      <div className="text-sm text-ink-light">
                         <strong>Your order value:</strong> ₹{suggestion.totalValue.toFixed(2)} | 
                         <strong>Potential savings:</strong> ₹{suggestion.potentialSavings.toFixed(2)}
                       </div>
@@ -330,8 +339,8 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                         disabled={isCompleted}
                         className={`px-6 py-2 rounded-lg font-medium shadow-lg hover:shadow-xl transition-all duration-300 ${
                           isCompleted
-                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                            : 'bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white'
+                            ? 'bg-paper-dark text-ink-medium cursor-not-allowed'
+                            : 'bg-gradient-to-r from-terracotta to-chili hover:from-terracotta-dark hover:to-chili text-white'
                         }`}
                       >
                         {isCompleted ? 'Completed' : 'Join Group'}
@@ -345,96 +354,96 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
 
           {/* Expanded Group Details */}
           {isExpanded && selectedGroup && (
-            <div ref={expandedRef} className="mt-6 p-6 bg-white border border-blue-200 rounded-xl shadow-lg">
+            <div ref={expandedRef} className="mt-6 p-6 bg-paper-light border border-terracotta/25 rounded-xl shadow-lg">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h4 className="text-xl font-bold text-gray-800">Group Details - {selectedGroup.supplierName}</h4>
-                  <p className="text-sm text-gray-600">{selectedGroup.location} • {selectedGroup.rating} ⭐ • {selectedGroup.ordersCompleted} orders</p>
+                  <h4 className="text-xl font-bold text-ink">Group Details - {selectedGroup.supplierName}</h4>
+                  <p className="text-sm text-ink-light">{selectedGroup.location} • {selectedGroup.rating} • {selectedGroup.ordersCompleted} orders</p>
                 </div>
                 <button 
                   onClick={() => setIsExpanded(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-paper-dark/50 rounded-lg transition-colors"
                 >
-                  <Icon name="X" size={20} className="text-gray-500" />
+                  <Icon name="X" size={20} className="text-ink-medium" />
                 </button>
               </div>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                  <h5 className="font-semibold text-blue-800 mb-3 flex items-center">
+                <div className="bg-gradient-to-br from-terracotta-light/60 to-turmeric-light/50 p-4 rounded-xl border border-terracotta/25">
+                  <h5 className="font-semibold text-terracotta-dark mb-3 flex items-center">
                     <Icon name="DollarSign" size={16} className="mr-2" />
-                    💰 Savings Breakdown
+                    Savings breakdown
                   </h5>
                   <div className="space-y-3 text-sm">
                     <div className="flex justify-between items-center">
-                      <span className="text-gray-600">Original Total:</span>
+                      <span className="text-ink-light">Original Total:</span>
                       <span className="font-medium">₹{selectedGroup.totalValue.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-green-600">
+                    <div className="flex justify-between items-center text-leaf-dark">
                       <span>Bulk Discount ({selectedGroup.discount}%):</span>
                       <span className="font-medium">-₹{selectedGroup.potentialSavings.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between items-center text-blue-600">
+                    <div className="flex justify-between items-center text-terracotta">
                       <span>Delivery Split:</span>
                       <span className="font-medium">-₹{(selectedGroup.deliveryFee / selectedGroup.requiredMembers).toFixed(2)}</span>
                     </div>
-                    <div className="border-t border-blue-200 pt-3">
+                    <div className="border-t border-terracotta/25 pt-3">
                       <div className="flex justify-between items-center font-bold text-lg">
                         <span>Final Total:</span>
-                        <span className="text-green-600">₹{(selectedGroup.totalValue - selectedGroup.potentialSavings - (selectedGroup.deliveryFee / selectedGroup.requiredMembers)).toFixed(2)}</span>
+                        <span className="text-leaf-dark">₹{(selectedGroup.totalValue - selectedGroup.potentialSavings - (selectedGroup.deliveryFee / selectedGroup.requiredMembers)).toFixed(2)}</span>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
+                      <div className="text-xs text-ink-medium mt-1">
                         You save ₹{(selectedGroup.potentialSavings + (selectedGroup.deliveryFee - selectedGroup.deliveryFee / selectedGroup.requiredMembers)).toFixed(2)} total!
                       </div>
                     </div>
                   </div>
                 </div>
                 
-                <div className="bg-gradient-to-br from-green-50 to-emerald-50 p-4 rounded-xl border border-green-200">
-                  <h5 className="font-semibold text-green-800 mb-3 flex items-center">
+                <div className="bg-gradient-to-br from-leaf-light/60 to-leaf-light/40 p-4 rounded-xl border border-leaf/30">
+                  <h5 className="font-semibold text-leaf-dark mb-3 flex items-center">
                     <Icon name="Users" size={16} className="mr-2" />
-                    📦 Group Members
+                    Group members
                   </h5>
                   <div className="space-y-3 text-sm">
-                    <div className="flex items-center justify-between p-2 bg-green-100 rounded-lg">
+                    <div className="flex items-center justify-between p-2 bg-leaf-light rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-leaf rounded-full"></div>
                         <span>Vendor 1</span>
                       </div>
-                      <span className="text-green-700">₹280</span>
+                      <span className="text-leaf-dark">₹280</span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-green-100 rounded-lg">
+                    <div className="flex items-center justify-between p-2 bg-leaf-light rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-leaf rounded-full"></div>
                         <span>Vendor 2</span>
                       </div>
-                      <span className="text-green-700">₹320</span>
+                      <span className="text-leaf-dark">₹320</span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-green-100 rounded-lg">
+                    <div className="flex items-center justify-between p-2 bg-leaf-light rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-leaf rounded-full"></div>
                         <span>Vendor 3</span>
                       </div>
-                      <span className="text-green-700">₹190</span>
+                      <span className="text-leaf-dark">₹190</span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-green-100 rounded-lg">
+                    <div className="flex items-center justify-between p-2 bg-leaf-light rounded-lg">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                        <div className="w-3 h-3 bg-leaf rounded-full"></div>
                         <span>Vendor 4</span>
                       </div>
-                      <span className="text-green-700">₹250</span>
+                      <span className="text-leaf-dark">₹250</span>
                     </div>
-                    <div className="flex items-center justify-between p-2 bg-blue-100 rounded-lg border-2 border-blue-300">
+                    <div className="flex items-center justify-between p-2 bg-terracotta-light rounded-lg border-2 border-terracotta/40">
                       <div className="flex items-center space-x-2">
-                        <div className="w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-                        <span className="font-medium text-blue-700">You (Current Order)</span>
+                        <div className="w-3 h-3 bg-terracotta rounded-full animate-pulse"></div>
+                        <span className="font-medium text-terracotta-dark">You (Current Order)</span>
                       </div>
-                      <span className="text-blue-700 font-medium">₹{selectedGroup.totalValue.toFixed(0)}</span>
+                      <span className="text-terracotta-dark font-medium">₹{selectedGroup.totalValue.toFixed(0)}</span>
                     </div>
                   </div>
-                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
-                    <p className="text-xs text-yellow-700">
-                      <strong>🎯 Almost Complete!</strong> Join now to complete the group and get your discount immediately!
+                  <div className="mt-3 p-2 bg-turmeric-light/60 border border-turmeric/30 rounded-lg">
+                    <p className="text-xs text-turmeric-dark">
+                      <strong>Almost there.</strong> One more vendor completes this group and the discount applies immediately.
                     </p>
                   </div>
                 </div>
@@ -446,8 +455,8 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                   disabled={isJoining || isGroupJoined(selectedGroup.id)}
                   className={`flex-1 py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 ${
                     isGroupJoined(selectedGroup.id)
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white'
+                      ? 'bg-paper-dark text-ink-medium cursor-not-allowed'
+                      : 'bg-gradient-to-r from-leaf to-leaf-dark hover:from-leaf-dark hover:to-leaf-dark text-white'
                   }`}
                 >
                   {isJoining ? (
@@ -470,7 +479,7 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                 <Button
                   variant="outline"
                   onClick={() => setIsExpanded(false)}
-                  className="border-gray-300 text-gray-700 hover:bg-gray-50 py-3 px-6 rounded-lg font-medium"
+                  className="border-paper-dark text-ink-light hover:bg-paper py-3 px-6 rounded-lg font-medium"
                 >
                   Cancel
                 </Button>
@@ -480,27 +489,27 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
 
           {/* Create Group Modal */}
           {showCreateGroup && (
-            <div className="mt-6 p-6 bg-white border border-blue-200 rounded-xl shadow-lg">
+            <div className="mt-6 p-6 bg-paper-light border border-terracotta/25 rounded-xl shadow-lg">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h4 className="text-xl font-bold text-gray-800">Create New Group Order</h4>
-                  <p className="text-sm text-gray-600">Share this link with other vendors to join your group</p>
+                  <h4 className="text-xl font-bold text-ink">Create New Group Order</h4>
+                  <p className="text-sm text-ink-light">Share this link with other vendors to join your group</p>
                 </div>
                 <button 
                   onClick={() => setShowCreateGroup(false)}
-                  className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 hover:bg-paper-dark/50 rounded-lg transition-colors"
                 >
-                  <Icon name="X" size={20} className="text-gray-500" />
+                  <Icon name="X" size={20} className="text-ink-medium" />
                 </button>
               </div>
               
               <div className="space-y-4">
-                <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-xl border border-blue-200">
-                  <h5 className="font-semibold text-blue-800 mb-2">📋 Group Details</h5>
+                <div className="bg-gradient-to-br from-terracotta-light/60 to-turmeric-light/50 p-4 rounded-xl border border-terracotta/25">
+                  <h5 className="font-semibold text-terracotta-dark mb-2">Group details</h5>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between">
                       <span>Group ID:</span>
-                      <span className="font-mono text-blue-600">{groupLink.split('/').pop()}</span>
+                      <span className="font-mono text-terracotta">{groupLink.split('/').pop()}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Required Members:</span>
@@ -517,31 +526,31 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
                   </div>
                 </div>
                 
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
-                  <h5 className="font-semibold text-gray-800 mb-2">🔗 Share Link</h5>
+                <div className="bg-paper p-4 rounded-xl border border-paper-dark">
+                  <h5 className="font-semibold text-ink mb-2">Share link</h5>
                   <div className="flex space-x-2">
                     <input
                       type="text"
                       value={groupLink}
                       readOnly
-                      className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm bg-white"
+                      className="flex-1 px-3 py-2 border border-paper-dark rounded-lg text-sm bg-paper-light"
                     />
                     <Button
                       onClick={copyGroupLink}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm"
+                      className="bg-terracotta hover:bg-terracotta-dark text-white px-4 py-2 rounded-lg text-sm"
                     >
                       <Icon name="Copy" size={14} className="mr-1" />
                       Copy
                     </Button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
+                  <p className="text-xs text-ink-medium mt-2">
                     Share this link via WhatsApp, email, or any messaging app
                   </p>
                 </div>
                 
-                <div className="bg-yellow-50 p-4 rounded-xl border border-yellow-200">
-                  <h5 className="font-semibold text-yellow-800 mb-2">💡 How it works</h5>
-                  <ul className="text-sm text-yellow-700 space-y-1">
+                <div className="bg-turmeric-light/60 p-4 rounded-xl border border-turmeric/30">
+                  <h5 className="font-semibold text-turmeric-dark mb-2">How it works</h5>
+                  <ul className="text-sm text-turmeric-dark space-y-1">
                     <li>• Share the link with 4 other vendors</li>
                     <li>• Each vendor adds their items to the group</li>
                     <li>• When 5 vendors join, everyone gets 15% discount</li>
@@ -553,7 +562,7 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
               <div className="flex space-x-3 mt-4">
                 <Button
                   onClick={() => setShowCreateGroup(false)}
-                  className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold"
+                  className="flex-1 bg-terracotta hover:bg-terracotta-dark text-white py-3 rounded-lg font-semibold"
                 >
                   Done
                 </Button>
@@ -561,16 +570,34 @@ const GroupBuyingSuggestion = ({ cartItems, onJoinGroup, onCreateGroup }) => {
             </div>
           )}
 
-          <div className="mt-6 pt-4 border-t border-blue-200">
+          <div className="mt-6 pt-4 border-t border-terracotta/25">
             <Button
               variant="ghost"
               onClick={handleCreateGroup}
-              className="w-full text-blue-600 hover:bg-blue-50 py-3 rounded-lg font-medium"
+              className="w-full text-terracotta hover:bg-terracotta-light/60 py-3 rounded-lg font-medium"
             >
               <Icon name="Plus" size={18} className="mr-2" />
               Create New Group Order
             </Button>
           </div>
+        </div>
+      )}
+
+      {status && (
+        <div
+          role="status"
+          className="mx-6 mb-6 flex items-start gap-3 bg-leaf-light border border-leaf/30 rounded-xl px-4 py-3"
+        >
+          <Icon name="CheckCircle" size={17} className="text-leaf-dark flex-shrink-0 mt-0.5" />
+          <p className="text-sm text-ink flex-1 break-words">{status}</p>
+          <button
+            type="button"
+            onClick={() => setStatus(null)}
+            aria-label="Dismiss"
+            className="press text-ink-medium hover:text-ink flex-shrink-0"
+          >
+            <Icon name="X" size={15} />
+          </button>
         </div>
       )}
     </div>

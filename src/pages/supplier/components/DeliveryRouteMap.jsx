@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import Icon from '../../../components/AppIcon';
 import Button from '../../../components/ui/Button';
+import { useToast } from '../../../contexts/ToastContext';
 
 const DeliveryRouteMap = ({ routes, selectedRoute, onRouteSelect, onOptimizeRoute }) => {
-  const [mapCenter, setMapCenter] = useState({ lat: 28.4595, lng: 77.0266 }); // Gurgaon coordinates
+  const toast = useToast();
+  const [mapCenter, setMapCenter] = useState({ lat: 19.0170, lng: 72.8478 }); // Dadar, Mumbai
   const [isOptimizing, setIsOptimizing] = useState(false);
 
   const routeColors = {
-    'Route A': '#2D5A27',
-    'Route B': '#E8734A', 
+    'Dadar Morning Run': '#6E9150',
+    'Bandra Loop': '#C0532E', 
     'Route C': '#F4A261',
     'Route D': '#059669'
   };
@@ -23,8 +25,7 @@ const DeliveryRouteMap = ({ routes, selectedRoute, onRouteSelect, onOptimizeRout
   };
 
   const handleLiveTracking = () => {
-    console.log('Live tracking clicked');
-    alert('Live Tracking - would open real-time delivery tracking interface');
+    toast.info('Live tracking opens once a driver starts the route.');
   };
 
   return (

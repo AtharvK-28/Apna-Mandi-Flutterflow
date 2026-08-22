@@ -62,7 +62,7 @@ const KarigarRegistrationForm = ({ formData, onChange, errors }) => {
   return (
     <div className="space-y-4">
       <div className="text-center mb-6">
-        <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-3">
+        <div className="w-16 h-16 bg-terracotta rounded-xl flex items-center justify-center mx-auto mb-3">
           <Icon name="Wrench" size={32} color="white" />
         </div>
         <h3 className="text-lg font-semibold text-foreground">

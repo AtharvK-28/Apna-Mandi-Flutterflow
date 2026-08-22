@@ -41,7 +41,6 @@ const OrderStatusCard = ({ order, onViewDetails }) => {
   };
 
   const handleQRScan = (scanResult) => {
-    console.log('QR Scan Result:', scanResult);
     // Handle successful QR scan
   };
 

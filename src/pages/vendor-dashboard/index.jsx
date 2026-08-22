@@ -14,7 +14,13 @@ import CategoryFilter from './components/CategoryFilter';
 import OrderStatusCard from './components/OrderStatusCard';
 import QuickActionButton from './components/QuickActionButton';
 import GroupBuyingModal from './components/GroupBuyingModal';
-import LocationBanner from './components/LocationBanner';
+import MausamEngineCard from './components/MausamEngineCard';
+import MandiPoolSection from './components/MandiPoolSection';
+import VyapaarScoreCard from './components/VyapaarScoreCard';
+import CateringOrderCard from './components/CateringOrderCard';
+import BoloMandi from './components/BoloMandi';
+import BarsaatCoverCard from './components/BarsaatCoverCard';
+import TyoharBookCard from './components/TyoharBookCard';
 import RatingModal from '../order-tracking-history/components/RatingModal';
 
 const VendorDashboard = () => {
@@ -24,7 +30,7 @@ const VendorDashboard = () => {
   const [recentOrders, setRecentOrders] = useState([]);
   const [showGroupBuyingModal, setShowGroupBuyingModal] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState('Sector 14, Gurgaon');
+  const [currentLocation, setCurrentLocation] = useState('Dadar West, Mumbai');
   const [showOrderDetails, setShowOrderDetails] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [showRatingModal, setShowRatingModal] = useState(false);
@@ -225,7 +231,6 @@ const VendorDashboard = () => {
         category: deal.category
       }, quantity);
       
-      console.log(`Added ${quantity} ${deal.unit} of ${deal.name} to cart`);
     } catch (error) {
       console.error('Error adding to cart:', error);
     }
@@ -237,14 +242,12 @@ const VendorDashboard = () => {
   };
 
   const handleCreateGroup = async (groupData) => {
-    console.log('Creating group buy:', groupData);
     // Mock group creation
     return new Promise(resolve => setTimeout(resolve, 1000));
   };
 
   const handleLocationChange = (newLocation) => {
     setCurrentLocation(newLocation);
-    console.log('Location changed to:', newLocation);
     // Refresh deals based on new location
   };
 
@@ -255,14 +258,12 @@ const VendorDashboard = () => {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <LocationHeader />
-      
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Location Banner */}
-        <div className="mt-4">
-          <LocationBanner onLocationChange={handleLocationChange} />
-        </div>
+      {/* LocationHeader carries the delivery address, the search box and the
+          cart link. LocationBanner underneath it stated the same address a
+          second time, so it has been dropped rather than shown twice. */}
+      <LocationHeader onLocationChange={handleLocationChange} />
 
+      <div id="main-content" tabIndex={-1} className="outline-none max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
         {/* Pull to Refresh Indicator */}
         {isRefreshing && (
           <div className="flex items-center justify-center py-4">
@@ -270,6 +271,15 @@ const VendorDashboard = () => {
             <span className="text-sm text-muted-foreground">Refreshing deals...</span>
           </div>
         )}
+
+        {/* Mausam Engine + Vyapaar Score */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6 items-start">
+          <MausamEngineCard />
+          <VyapaarScoreCard />
+        </div>
+
+        {/* Barsaat Cover — rain insurance triggered by the forecast */}
+        <BarsaatCoverCard />
 
         {/* Metrics Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
@@ -293,34 +303,43 @@ const VendorDashboard = () => {
             subtitle="Reduce waste, increase profits"
             icon="RefreshCw"
             to="/vendor-exchange"
-            color="text-green-600"
-            bgColor="bg-green-100"
+            color="text-leaf-dark"
+            bgColor="bg-leaf-light"
           />
           <QuickActionButton
             title="Virasaat"
             subtitle="License legendary recipes"
             icon="Crown"
             to="/virasaat"
-            color="text-purple-600"
-            bgColor="bg-purple-100"
+            color="text-terracotta"
+            bgColor="bg-terracotta-light"
           />
           <QuickActionButton
             title="Karigar Connect"
             subtitle="Find skilled kitchen help"
             icon="Wrench"
             to="/karigar-connect"
-            color="text-orange-600"
-            bgColor="bg-orange-100"
+            color="text-turmeric-dark"
+            bgColor="bg-turmeric-light"
           />
           <QuickActionButton
             title="Order History"
             subtitle="Track all your orders"
             icon="Package"
             onClick={() => navigate('/orders')}
-            color="text-blue-600"
-            bgColor="bg-blue-100"
+            color="text-leaf-dark"
+            bgColor="bg-leaf-light"
           />
         </div>
+
+        {/* Mandi Pool — corridor group buying */}
+        <MandiPoolSection onStartPool={() => setShowGroupBuyingModal(true)} />
+
+        {/* Order the Street — corporate catering broadcast */}
+        <CateringOrderCard />
+
+        {/* Tyohar Book — festival pre-order escrow */}
+        <TyoharBookCard />
 
         {/* Recent Orders */}
         <div className="mb-6">
@@ -478,6 +497,9 @@ const VendorDashboard = () => {
           <Icon name="Users" size={24} />
         </button>
       </div>
+
+      {/* Bolo Mandi — voice assistant */}
+      <BoloMandi />
 
       {/* Group Buying Modal */}
       <GroupBuyingModal
