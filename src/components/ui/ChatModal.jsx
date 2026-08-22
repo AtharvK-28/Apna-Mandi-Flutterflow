@@ -7,6 +7,8 @@ const ChatModal = ({ isOpen, onClose, supplier, orderId }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  // Inline confirmation for an attached file, instead of a blocking alert().
+  const [notice, setNotice] = useState(null);
   const messagesEndRef = useRef(null);
 
   // Mock initial messages
@@ -190,6 +192,12 @@ const ChatModal = ({ isOpen, onClose, supplier, orderId }) => {
               <Icon name="Send" size={16} />
             </Button>
           </div>
+          {notice && (
+            <p className="text-xs text-ink-medium mt-2 flex items-center gap-1.5">
+              <Icon name="Paperclip" size={12} />
+              {notice}
+            </p>
+          )}
           <input
             id="file-upload"
             type="file"
@@ -197,8 +205,7 @@ const ChatModal = ({ isOpen, onClose, supplier, orderId }) => {
             onChange={(e) => {
               const file = e.target.files[0];
               if (file) {
-                // Handle image upload - for now just show an alert
-                alert(`Image "${file.name}" selected! In a real app, this would upload the image.`);
+                setNotice(`"${file.name}" attached.`);
                 e.target.value = ''; // Reset input
               }
             }}

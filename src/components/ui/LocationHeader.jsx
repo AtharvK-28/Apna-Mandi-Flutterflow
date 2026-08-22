@@ -4,7 +4,7 @@ import Icon from '../AppIcon';
 import Button from './Button';
 import { useCart } from '../../contexts/CartContext';
 
-const LocationHeader = () => {
+const LocationHeader = ({ onLocationChange }) => {
   const [currentLocation, setCurrentLocation] = useState('Detecting location...');
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -50,9 +50,14 @@ const LocationHeader = () => {
     setIsLocationModalOpen(true);
   };
 
+  const applyLocation = (location) => {
+    setCurrentLocation(location);
+    onLocationChange?.(location);
+  };
+
   const handleLocationSave = () => {
     if (searchQuery.trim()) {
-      setCurrentLocation(searchQuery);
+      applyLocation(searchQuery.trim());
     }
     setSearchQuery('');
     setIsLocationModalOpen(false);
@@ -66,7 +71,7 @@ const LocationHeader = () => {
   const detectCurrentLocation = () => {
     setCurrentLocation('Detecting location...');
     setTimeout(() => {
-      setCurrentLocation('Borivali, Mumbai');
+      applyLocation('Borivali, Mumbai');
       setIsLocationModalOpen(false);
     }, 2000);
   };
@@ -177,11 +182,11 @@ const LocationHeader = () => {
                 <div>
                   <p className="text-sm font-medium text-card-foreground mb-2">Popular Locations</p>
                   <div className="space-y-2">
-                    {['Sector 14, Gurgaon', 'DLF Phase 1, Gurgaon', 'Cyber City, Gurgaon', 'MG Road, Gurgaon'].map((location) => (
+                    {['Dadar West, Mumbai', 'Bandra Station, Mumbai', 'Andheri East, Mumbai', 'Borivali, Mumbai'].map((location) => (
                       <button
                         key={location}
                         onClick={() => {
-                          setCurrentLocation(location);
+                          applyLocation(location);
                           setIsLocationModalOpen(false);
                           setSearchQuery('');
                         }}

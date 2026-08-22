@@ -141,7 +141,6 @@ export const CartProvider = ({ children }) => {
     // setCartCount(0); // This line is no longer needed
     try {
       localStorage.removeItem('apna-mandi-cart');
-      console.log('Cart data reset successfully');
     } catch (error) {
       console.error('Error resetting cart data:', error);
     }

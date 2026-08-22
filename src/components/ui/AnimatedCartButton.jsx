@@ -15,7 +15,6 @@ const AnimatedCartButton = ({
   const handleClick = () => {
     if (disabled || isClicked) return;
 
-    console.log('AnimatedCartButton clicked!');
     setIsClicked(true);
     
     // Call the completion callback after animation

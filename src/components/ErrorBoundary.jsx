@@ -31,15 +31,18 @@ class ErrorBoundary extends React.Component {
               </svg>
             </div>
             <div className="flex flex-col gap-1 text-center">
-              <h1 className="text-2xl font-medium text-neutral-800">Something went wrong</h1>
-              <p className="text-neutral-600 text-base w w-8/12 mx-auto">We encountered an unexpected error while processing your request.</p>
+              <h1 className="text-2xl font-medium text-ink">Something went wrong</h1>
+              <p className="text-ink-medium text-base w-8/12 mx-auto">We encountered an unexpected error while processing your request.</p>
             </div>
             <div className="flex justify-center items-center mt-6">
               <button
                 onClick={() => {
-                  window.location.href = "/deals";
+                  // "/" routes each visitor to their own front door. Sending
+                  // everyone to /deals dropped karigars and suppliers onto a
+                  // page they are not allowed to open.
+                  window.location.href = "/";
                 }}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded flex items-center gap-2 transition-colors duration-200 shadow-sm"
+                className="bg-leaf hover:bg-leaf-dark text-white font-medium py-2 px-4 rounded flex items-center gap-2 transition-colors duration-200 shadow-sm"
               >
                 <Icon name="ArrowLeft" size={18} color="#fff" />
                 Back
