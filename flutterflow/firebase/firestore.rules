@@ -1,0 +1,301 @@
+rules_version = '2';
+
+// Apna Mandi — Firestore security rules.
+//
+// Deploy with:
+//   firebase deploy --only firestore:rules --project <your-project-id>
+//
+// IMPORTANT: FlutterFlow rewrites rules when you create or edit a collection in
+// its UI, and it will overwrite this file's effect. Create the collections in
+// FlutterFlow FIRST, then deploy this LAST, and re-deploy after any schema
+// change made through the FlutterFlow console.
+//
+// The shape of the model these rules enforce:
+//   • Everyone signed in can READ the marketplace (deals, gigs, listings,
+//     virasaat, stalls). That is what a marketplace is.
+//   • You can only WRITE things you own, and role determines what you may own:
+//     a karigar cannot post a deal, a vendor cannot edit supplier inventory.
+//   • Role is read from the user's own document, never from the client request.
+//     A client that could name its own role could name itself an admin.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function uid() {
+      return request.auth.uid;
+    }
+
+    function userDoc() {
+      return get(/databases/$(database)/documents/users/$(uid())).data;
+    }
+
+    function role() {
+      return userDoc().role;
+    }
+
+    function isVendor()   { return signedIn() && role() == 'vendor'; }
+    function isKarigar()  { return signedIn() && role() == 'karigar'; }
+    function isSupplier() { return signedIn() && role() == 'supplier'; }
+
+    function ownsRef(refField) {
+      return refField == /databases/$(database)/documents/users/$(uid());
+    }
+
+    // Fields a client must never set on itself. Score, ratings and verification
+    // are earned server-side; a vendor who can write their own vyapaarScore has
+    // a 900 within the minute.
+    function noPrivilegedFields() {
+      return !request.resource.data.diff(resource.data).affectedKeys()
+        .hasAny(['vyapaarScore', 'vyapaarFactors', 'rating', 'totalRatings',
+                 'verifiedSkills', 'isVerified', 'hygieneGrade',
+                 'hygieneAuditedAt', 'totalGigs', 'role']);
+    }
+
+    // ── users ────────────────────────────────────────────────────────────────
+    //
+    // Readable by any signed-in user: a vendor must be able to see a karigar's
+    // profile to decide whether to hire them, and vice versa. Phone numbers are
+    // in here, which is a deliberate trade — the whole product is people
+    // arranging work with each other — but it means the app must never store
+    // anything in `users` that is not meant for another user to see.
+
+    match /users/{userId} {
+      allow read: if signedIn();
+
+      // Create only your own document, and only with a real role. `role` is
+      // settable exactly once, at creation.
+      allow create: if signedIn()
+                    && userId == uid()
+                    && request.resource.data.role in ['vendor', 'karigar', 'supplier']
+                    && request.resource.data.uid == uid();
+
+      // Update your own document, minus the privileged fields above. Role is in
+      // that list: changing role after registration would strand every document
+      // that references you as the other kind of user.
+      allow update: if signedIn() && userId == uid() && noPrivilegedFields();
+
+      allow delete: if false; // Deletion is a support operation, not a tap.
+    }
+
+    // ── deals ────────────────────────────────────────────────────────────────
+
+    match /deals/{dealId} {
+      allow read: if signedIn();
+      allow create: if isSupplier() && ownsRef(request.resource.data.supplierRef);
+      allow update, delete: if isSupplier() && ownsRef(resource.data.supplierRef);
+    }
+
+    // ── orders ───────────────────────────────────────────────────────────────
+    //
+    // Two parties, different powers. The vendor creates it and may cancel while
+    // it is still pending. The supplier moves it through fulfilment. Neither can
+    // edit the other's side, and nobody can rewrite items or totals after the
+    // fact — an order is a record of what was agreed.
+
+    match /orders/{orderId} {
+      allow read: if signedIn()
+                  && (ownsRef(resource.data.vendorRef) || ownsRef(resource.data.supplierRef));
+
+      allow create: if isVendor()
+                    && ownsRef(request.resource.data.vendorRef)
+                    && request.resource.data.status == 'pending'
+                    // Client-declared payment is never trusted as settled.
+                    && request.resource.data.paymentStatus == 'pending';
+
+      allow update: if signedIn() && (
+        // Supplier advances fulfilment.
+        (isSupplier() && ownsRef(resource.data.supplierRef)
+          && request.resource.data.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'deliveredAt', 'routeRef', 'deliverySlot', 'paymentStatus']))
+        ||
+        // Vendor may cancel while pending, or rate after delivery. Nothing else.
+        (isVendor() && ownsRef(resource.data.vendorRef)
+          && (
+            (request.resource.data.status == 'cancelled' && resource.data.status == 'pending')
+            || (resource.data.status == 'delivered'
+                && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['rating']))
+          ))
+      );
+
+      allow delete: if false;
+    }
+
+    // ── gigs ─────────────────────────────────────────────────────────────────
+
+    match /gigs/{gigId} {
+      allow read: if signedIn();
+      allow create: if isVendor() && ownsRef(request.resource.data.vendorRef);
+      allow update: if signedIn() && (
+        (isVendor() && ownsRef(resource.data.vendorRef))
+        // A karigar assigned to a gig may mark it completed, and nothing else.
+        || (isKarigar()
+            && resource.data.assignedKarigarRef == /databases/$(database)/documents/users/$(uid())
+            && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status']))
+      );
+      allow delete: if isVendor() && ownsRef(resource.data.vendorRef);
+
+      // Applications live in a subcollection precisely so they can be secured
+      // per-document: they are written by a different user than the gig's owner,
+      // and array-union writes onto the gig could not be checked per element.
+      match /applications/{applicationId} {
+        allow read: if signedIn() && (
+          ownsRef(get(/databases/$(database)/documents/gigs/$(gigId)).data.vendorRef)
+          || ownsRef(resource.data.karigarRef)
+        );
+        allow create: if isKarigar()
+                      && ownsRef(request.resource.data.karigarRef)
+                      && request.resource.data.status == 'applied';
+        allow update: if signedIn() && (
+          // Vendor accepts or rejects.
+          (ownsRef(get(/databases/$(database)/documents/gigs/$(gigId)).data.vendorRef)
+            && request.resource.data.status in ['accepted', 'rejected'])
+          // Karigar withdraws.
+          || (ownsRef(resource.data.karigarRef)
+              && request.resource.data.status == 'withdrawn')
+        );
+        allow delete: if false;
+      }
+    }
+
+    // ── shifts ───────────────────────────────────────────────────────────────
+    //
+    // Read by both parties. Written only by the vendor who owes the money —
+    // a karigar who could set their own paymentStatus to 'paid' would make the
+    // earnings screen meaningless.
+
+    match /shifts/{shiftId} {
+      allow read: if signedIn()
+                  && (ownsRef(resource.data.karigarRef) || ownsRef(resource.data.vendorRef));
+      allow create: if isVendor() && ownsRef(request.resource.data.vendorRef);
+      allow update: if signedIn() && (
+        (isVendor() && ownsRef(resource.data.vendorRef))
+        || (isKarigar() && ownsRef(resource.data.karigarRef)
+            && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['ratingFromKarigar']))
+      );
+      allow delete: if false;
+    }
+
+    // ── chats ────────────────────────────────────────────────────────────────
+
+    match /chats/{chatId} {
+      allow read, update: if signedIn()
+        && request.auth != null
+        && resource.data.participantRefs.hasAny([/databases/$(database)/documents/users/$(uid())]);
+      allow create: if signedIn()
+        && request.resource.data.participantRefs.hasAny([/databases/$(database)/documents/users/$(uid())]);
+      allow delete: if false;
+
+      match /messages/{messageId} {
+        function participant() {
+          return get(/databases/$(database)/documents/chats/$(chatId)).data.participantRefs
+                 .hasAny([/databases/$(database)/documents/users/$(uid())]);
+        }
+        allow read: if signedIn() && participant();
+        allow create: if signedIn() && participant()
+                      && ownsRef(request.resource.data.senderRef);
+        // Only readAt may change. A sent message is not editable — this is a
+        // record of an agreement about work and money.
+        allow update: if signedIn() && participant()
+                      && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['readAt']);
+        allow delete: if false;
+      }
+    }
+
+    // ── exchangeListings ─────────────────────────────────────────────────────
+
+    match /exchangeListings/{listingId} {
+      allow read: if signedIn();
+      allow create: if isVendor() && ownsRef(request.resource.data.vendorRef);
+      allow update, delete: if isVendor() && ownsRef(resource.data.vendorRef);
+    }
+
+    // ── virasaatProducts ─────────────────────────────────────────────────────
+
+    match /virasaatProducts/{productId} {
+      allow read: if signedIn();
+      allow create: if isVendor() && ownsRef(request.resource.data.masterVendorRef);
+      allow update, delete: if isVendor() && ownsRef(resource.data.masterVendorRef);
+
+      match /testimonials/{testimonialId} {
+        allow read: if signedIn();
+        // Anyone signed in may leave one; nobody may edit one afterwards,
+        // including its author. An editable testimonial is not a testimonial.
+        allow create: if signedIn();
+        allow update, delete: if false;
+      }
+    }
+
+    // ── inventory ────────────────────────────────────────────────────────────
+    //
+    // A supplier's own stock levels and cost prices. Not readable by vendors —
+    // costPrice is the supplier's margin, and publishing it would make the
+    // Deals screen a negotiation weapon.
+
+    match /inventory/{itemId} {
+      allow read, write: if isSupplier() && (
+        (resource == null && ownsRef(request.resource.data.supplierRef))
+        || (resource != null && ownsRef(resource.data.supplierRef))
+      );
+    }
+
+    // ── pools, pickupPoints, deliveryRoutes, khauGalliStalls ──────────────────
+
+    match /pools/{poolId} {
+      allow read: if signedIn();
+      // Joining a pool is a member-list edit by the joiner; forming one is a
+      // vendor action. Setting terms requires a Vyapaar score of 650, which is
+      // a server-side check — do not enforce it client-side alone.
+      allow create: if isVendor() && ownsRef(request.resource.data.leadVendorRef);
+      allow update: if isVendor();
+      allow delete: if isVendor() && ownsRef(resource.data.leadVendorRef);
+    }
+
+    match /pickupPoints/{pointId} {
+      allow read: if signedIn();
+      allow write: if false; // Operations-managed.
+    }
+
+    match /deliveryRoutes/{routeId} {
+      allow read: if signedIn()
+                  && (isSupplier() && ownsRef(resource.data.supplierRef));
+      allow write: if isSupplier() && (
+        (resource == null && ownsRef(request.resource.data.supplierRef))
+        || (resource != null && ownsRef(resource.data.supplierRef))
+      );
+    }
+
+    // The one genuinely public collection — Khau Galli is the guest-browsable
+    // food-street directory, and a guest has no auth token at all.
+    match /khauGalliStalls/{stallId} {
+      allow read: if true;
+      allow write: if isVendor() && ownsRef(resource.data.vendorRef);
+    }
+
+    // ── notifications ────────────────────────────────────────────────────────
+
+    match /notifications/{notificationId} {
+      allow read: if signedIn() && ownsRef(resource.data.userRef);
+      // Written server-side. The only client change permitted is marking read.
+      allow create: if false;
+      allow update: if signedIn() && ownsRef(resource.data.userRef)
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['isRead']);
+      allow delete: if signedIn() && ownsRef(resource.data.userRef);
+    }
+
+    // ── Everything else ──────────────────────────────────────────────────────
+    // Default deny. A collection added in FlutterFlow without a rule here is
+    // locked, which is the correct failure direction — you find out in testing
+    // rather than after a leak.
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

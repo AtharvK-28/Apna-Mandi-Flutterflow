@@ -1,0 +1,29 @@
+name: apna_mandi
+description: Apna Mandi - Street Food Vendor Operating System (Flutter / FlutterFlow)
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  google_fonts: ^6.1.0
+  font_awesome_flutter: ^10.6.0
+  provider: ^6.1.1
+  shared_preferences: ^2.2.2
+  speech_to_text: ^6.6.0
+  flutter_tts: ^3.8.5
+  intl: ^0.20.3
+  flutter_animate: ^4.5.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
