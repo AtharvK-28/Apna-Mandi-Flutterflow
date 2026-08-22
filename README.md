@@ -1,157 +1,56 @@
-# 🛒 Apna Mandi - India's Premier Street Food & Grocery Marketplace
+# Welcome to your Expo app 👋
 
-A comprehensive marketplace platform connecting street food vendors, suppliers, and customers across India.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-## 🚀 Features
+## Get started
 
-### **For Vendors:**
-- 📱 **Vendor Dashboard** - Manage inventory, track orders, view analytics
-- 🔄 **Vendor Exchange** - Reduce waste by exchanging surplus ingredients
-- 🔧 **Karigar Connect** - Find skilled kitchen help on-demand
-- 👑 **Virasaat** - License legendary recipes from master vendors
+1. Install dependencies
 
-### **For Suppliers:**
-- 📊 **Supplier Dashboard** - Manage products, track sales, view insights
-- 🚚 **PickupPoint** - Virtual loading bay for efficient deliveries
-- 📈 **Analytics** - Business insights and performance metrics
-
-### **For Customers:**
-- 🛍️ **Deal Discovery** - Find the best grocery deals and street food
-- 🛒 **Shopping Cart** - Seamless checkout experience
-- 📦 **Order Tracking** - Real-time order status updates
-
-## 🎯 Key Innovations
-
-### **Karigar Connect (Artisan Connect)**
-- **On-demand skilled kitchen help** - "Uber for Kitchen Staff"
-- **Emergency cover** for vendors who can't work
-- **Skill training** from verified experts
-- **Hyper-local matching** within 2-3 km radius
-
-### **Virasaat (Legacy)**
-- **License legendary recipes** from master vendors
-- **Success stories** of vendors who scaled their businesses
-- **Recipe monetization** for traditional knowledge
-
-### **Vendor Exchange**
-- **Reduce food waste** by exchanging surplus ingredients
-- **Cost optimization** for vendors
-- **Sustainability** in the food ecosystem
-
-## 🛠️ Tech Stack
-
-- **Frontend:** React 18, Vite, Tailwind CSS
-- **Routing:** React Router DOM
-- **State Management:** Redux Toolkit
-- **UI Components:** Radix UI, Lucide React Icons
-- **Charts:** Recharts, D3.js
-- **Forms:** React Hook Form
-- **Animations:** Framer Motion
-
-## 🚀 Deployment
-
-### **Netlify Deployment**
-
-1. **Build the project:**
-   ```bash
-   npm run build
-   ```
-
-2. **Deploy to Netlify:**
-   - Connect your GitHub repository to Netlify
-   - Set build command: `npm run build`
-   - Set publish directory: `dist`
-   - Deploy!
-
-3. **Environment Variables (if needed):**
-   - Add any required environment variables in Netlify dashboard
-
-### **Manual Deployment**
-
-1. **Install dependencies:**
    ```bash
    npm install
    ```
 
-2. **Build for production:**
+2. Start the app
+
    ```bash
-   npm run build
+   npx expo start
    ```
 
-3. **Serve locally:**
-   ```bash
-   npm run serve
-   ```
+In the output, you'll find options to open the app in a
 
-## 📱 Demo Credentials
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-### **Vendor Login:**
-- Phone: `9876543210`
-- OTP: `123456`
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-### **Supplier Login:**
-- Phone: `9876543211`
-- OTP: `654321`
+## Get a fresh project
 
-## 🎨 Design System
+When you're ready, run:
 
-- **Color Scheme:** Orange and Red gradient theme
-- **Typography:** Modern, readable fonts
-- **Icons:** Lucide React icon set
-- **Responsive:** Mobile-first design approach
-
-## 🔧 Development
-
-### **Local Development:**
 ```bash
-npm install
-npm start
+npm run reset-project
 ```
 
-### **Available Scripts:**
-- `npm start` - Start development server
-- `npm run build` - Build for production
-- `npm run serve` - Preview production build
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## 📁 Project Structure
+### Other setup steps
 
-```
-src/
-├── components/          # Reusable UI components
-├── pages/              # Page components
-│   ├── authentication-login-register/
-│   ├── deal-discovery-shopping/
-│   ├── vendor-dashboard/
-│   ├── supplier-dashboard/
-│   ├── karigar-connect/
-│   ├── virasaat/
-│   └── vendor-exchange/
-├── contexts/           # React contexts
-├── styles/            # Global styles
-└── utils/             # Utility functions
-```
+- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
+- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
+- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
 
-## 🌟 Key Pages
+## Learn more
 
-1. **Login Page** (`/`) - User authentication and type selection
-2. **Deals Page** (`/deals`) - Browse grocery deals and street food
-3. **Vendor Dashboard** (`/vendor-dashboard`) - Vendor management interface
-4. **Supplier Dashboard** (`/supplier-dashboard`) - Supplier management interface
-5. **Karigar Connect** (`/karigar-connect`) - On-demand kitchen help platform
-6. **Virasaat** (`/virasaat`) - Recipe licensing and legacy platform
-7. **Vendor Exchange** (`/vendor-exchange`) - Ingredient exchange platform
+To learn more about developing your project with Expo, look at the following resources:
 
-## 🤝 Contributing
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
+## Join the community
 
-## 📄 License
+Join our community of developers creating universal apps.
 
-This project is licensed under the MIT License.
-
----
-
-**Built with ❤️ for India's Street Food Ecosystem**
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
