@@ -1,15 +1,61 @@
 {
-  "short_name": "apna-mandi",
-  "name": "apna-mandi",
+  "name": "Apna Mandi — Street Food OS",
+  "short_name": "Apna Mandi",
+  "description": "Kitchen help on demand, surplus exchange, wholesale deals and recipe legacies — for India's street food economy.",
+  "id": "/",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "en-IN",
+  "dir": "ltr",
+  "theme_color": "#C0532E",
+  "background_color": "#FFFDF7",
+  "categories": ["business", "food", "shopping"],
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
-  "start_url": ".",
-  "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "shortcuts": [
+    {
+      "name": "Wholesale deals",
+      "short_name": "Deals",
+      "description": "Today's supplier prices",
+      "url": "/deals?source=shortcut"
+    },
+    {
+      "name": "Find work",
+      "short_name": "Find work",
+      "description": "Shifts open near you",
+      "url": "/karigar/find-work?source=shortcut"
+    },
+    {
+      "name": "Incoming orders",
+      "short_name": "Orders",
+      "description": "Orders waiting to be fulfilled",
+      "url": "/supplier/orders?source=shortcut"
+    }
+  ]
 }

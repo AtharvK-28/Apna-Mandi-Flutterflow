@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Apna Mandi">
+  <title>Apna Mandi</title>
+  <defs>
+    <linearGradient id="am-bg-m" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#D9703F"/>
+      <stop offset="1" stop-color="#A8331F"/>
+    </linearGradient>
+  </defs>
+  <!-- No rounding: Android applies its own mask, and anything outside the
+       inner 80% circle may be cropped, so the mark is scaled down to fit. -->
+  <rect width="512" height="512" fill="url(#am-bg-m)"/>
+  <g fill="#FFFDF7" transform="translate(256 256) scale(0.7) translate(-256 -256)">
+    <path d="M118 150 H394 V196 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 Z"/>
+    <rect x="146" y="214" width="20" height="154" rx="9"/>
+    <rect x="346" y="214" width="20" height="154" rx="9"/>
+    <path d="M206 336 a50 50 0 0 1 100 0 Z"/>
+    <rect x="122" y="336" width="268" height="32" rx="14"/>
+  </g>
+</svg>

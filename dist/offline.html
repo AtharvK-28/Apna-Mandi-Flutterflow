@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Offline — Apna Mandi</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#C0532E" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <!-- Everything is inline and self-contained on purpose: this page is shown
+       precisely when no request can reach the network, so it cannot depend on
+       a stylesheet, a font or a script that would have to be fetched. -->
+  <style>
+    :root {
+      color-scheme: light dark;
+      --paper: #FFFDF7;
+      --ink: #2C1D14;
+      --ink-soft: #6B5748;
+      --terracotta: #C0532E;
+      --line: #EADFD2;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --paper: #1E1712;
+        --ink: #EFE6DA;
+        --ink-soft: #A99685;
+        --terracotta: #DB7550;
+        --line: #33271F;
+      }
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      text-align: center;
+    }
+
+    .card { max-width: 26rem; }
+
+    .mark {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 20px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #D9703F, #A8331F);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin: 0 0 8px;
+      color: var(--ink-soft);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 12px 26px;
+      border: 0;
+      border-radius: 14px;
+      background: var(--terracotta);
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+    .hint {
+      margin-top: 22px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-size: 0.82rem;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="mark" aria-hidden="true">
+      <svg width="40" height="40" viewBox="0 0 512 512" fill="#FFFDF7">
+        <path
+          d="M118 150 H394 V196 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 q-27.6 34 -55.2 0 Z" />
+        <rect x="146" y="214" width="20" height="154" rx="9" />
+        <rect x="346" y="214" width="20" height="154" rx="9" />
+        <path d="M206 336 a50 50 0 0 1 100 0 Z" />
+        <rect x="122" y="336" width="268" height="32" rx="14" />
+      </svg>
+    </div>
+
+    <h1>No connection</h1>
+    <p>Apna Mandi can&rsquo;t reach the network right now.</p>
+    <p>Pages you have already opened will still work. Anything you send &mdash; an order, a gig, a
+      message &mdash; needs signal.</p>
+
+    <button type="button" onclick="location.reload()">Try again</button>
+
+    <p class="hint">If this keeps happening, check mobile data or Wi-Fi, then reopen the app.</p>
+  </main>
+
+  <script>
+    // Reload the moment the connection comes back, so nobody sits looking at a
+    // dead page waiting to think of tapping the button.
+    addEventListener('online', function () { location.reload(); });
+  </script>
+</body>
+
+</html>
